@@ -1,0 +1,9 @@
+{
+  // Required
+  "name": "doxter Chrome",
+  "version": "0.0.1",
+  "manifest_version": 2,
+
+  "description": "Chrome Extension that utilizes the doxter-synchronization API",
+  "default_locale": "de",
+}
