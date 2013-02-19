@@ -3,6 +3,10 @@
 <title>doxte Chrome Options</title>
 </head>
 
+<link href="options.css" rel="stylesheet" type="text/css" />
+<link href="jsoneditor/jsoneditor.css" rel="stylesheet" type="text/css" />
+
+
 <body>
 
 API Base URL:
@@ -18,11 +22,19 @@ Password
 <br />
 
 <button id="save">Save</button>
+<button id="connection-test">Connection Test</button>
+
+<div id="api-console">
+  <input type="text" id="console-input" />
+  <button id="console-execute">Execute</button>
+</div>
 </body>
 
-<div id="saved" style="display: none;">Saved! :)</div>
+<div id="status" style="display: none;"></div>
 
 <script src="jquery-1.9.1.min.js"></script>
+<script src="FlexisJsonEditor/jquery.jsoneditor.min.js"></script>
+<script src="helper.js"></script>
 <script src="options.js"></script>
 
 </html>
