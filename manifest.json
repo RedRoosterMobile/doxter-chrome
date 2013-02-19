@@ -5,5 +5,10 @@
   "manifest_version": 2,
 
   "description": "Chrome Extension that utilizes the doxter-synchronization API",
-  "default_locale": "de",
+  
+  "background": {
+    "scripts": ["jquery-1.9.1.min.js", "doxter-chrome.js"]
+  },
+
+  "options_page": "options.html"
 }
