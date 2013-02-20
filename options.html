@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>doxte Chrome Options</title>
+<title>doxter Chrome Options</title>
 </head>
 
 <link href="options.css" rel="stylesheet" type="text/css" />
@@ -9,31 +9,54 @@
 
 <body>
 
-API Base URL:
-<input type="text" id="api-base-url" />
-<br />
+<div class="form">
 
-Username:
-<input type="text" id="username" />
-<br />
+  <h1>doxter Chrome Options</h1>
+  <div class="form-inner">
+    <label for="api-base-url">API Base URL:</label>
+    <input type="text" name= "api-base-url" id="api-base-url" />
+    <br />
 
-Password
-<input type="text" id="password" />
-<br />
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" />
+    <br />
 
-<button id="save">Save</button>
-<button id="connection-test">Connection Test</button>
+    <label for="password">Password:</label>
+    <input type="text" name="password" id="password" />
+    <br />
 
-<div id="api-console">
-  <input type="text" id="console-input" />
-  <button id="console-execute">Execute</button>
+    <button id="save">Save</button>
+    <button id="connection-test">Test</button>
+    
+  </div>
 </div>
+
+
+
+<div class="form" id="api-console">
+  <h1>API Console</h1>
+  <div class="form-inner">
+    <input type="text" id="console-input" />
+    <button id="console-execute">Execute</button>
+    <div class="json-editor" id="console-output">
+      <span class="msg-to-hide">Output goes here</span>
+      <img src="spinner.gif" class="spinner" /> 
+    </div>
+  </div>
+</div>
+
+
+<div id="status">
+  <div id="status-inner">
+  </div>
+</div>
+
+
 </body>
 
-<div id="status" style="display: none;"></div>
 
-<script src="jquery-1.9.1.min.js"></script>
-<script src="FlexisJsonEditor/jquery.jsoneditor.min.js"></script>
+<script src="jsoneditor/jquery.min.js"></script>
+<script src="jsoneditor/jquery.jsoneditor.min.js"></script>
 <script src="helper.js"></script>
 <script src="options.js"></script>
 
