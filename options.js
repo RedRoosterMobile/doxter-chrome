@@ -1,5 +1,7 @@
 $(function() {
   
+  window.backgroundPage = chrome.extension.getBackgroundPage();
+  
   $("#save").click(function() {
     saveOptions();
   });
@@ -12,19 +14,37 @@ $(function() {
     consoleExecute();
   });
 
-  getCredentials();
+  // Get credentials from local storage
+  getSettings();
+
+  if(window.backgroundPage.oauth.hasToken()) {
+    $("#gcal-auth").addClass("authorized").text("GCal is authorized");
+  }
+  else {
+    $("#gcal-auth").click(function() {
+      authorizeGcal();
+    });
+  }
   
   $("#api-base-url").attr("value", window.api_base_url);
   $("#username").attr("value", window.api_username);
   $("#password").attr("value", window.api_password);
+  $("#sync-every").attr("value", window.api_sync_every);
+  $("#gcal-id").attr("value", window.api_gcal_id);
+  $("#doxcal-id").attr("value", window.api_doxcal_id);
 
   function saveOptions() {
     localStorage.setItem("doxter-api-base-url", $("#api-base-url").val());
     localStorage.setItem("doxter-api-username", $("#username").val());
     localStorage.setItem("doxter-api-password", $("#password").val());
+
     
+    localStorage.setItem("doxter-api-sync-every", $("#sync-every").val());
+    localStorage.setItem("doxter-api-gcal-id", $("#gcal-id").val());
+    localStorage.setItem("doxter-api-doxcal-id", $("#doxcal-id").val());
+
     showStatus("Saved", true);
-    getCredentials();
+    getSettings();
   }
 
   function connectionTest() {
@@ -53,7 +73,16 @@ $(function() {
         showStatus("Success", true);
         $("#console-output").html("");
         $("#console-output").jsonEditor(data);
-      } 
+      },
+      error: function(data) {
+        showStatus("Error", false);
+      }
     });
   }
+
+  function authorizeGcal() {
+    window.backgroundPage.oauth.authorize(function() {
+      $("#gcal-auth").addClass("authorized");
+    });
+  }    
 });

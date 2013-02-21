@@ -7,11 +7,18 @@
   "description": "Chrome Extension that utilizes the doxter-synchronization API",
 
   "permissions": [
-    "http://*/"
+    "tabs",
+    "http://*/",
+    "https://*/"
   ],
   
   "background": {
-    "scripts": ["jquery-1.9.1.min.js", "doxter-chrome.js"]
+    "scripts": [
+      "jquery-1.9.1.min.js",
+      "chrome_ex_oauth.js",
+      "chrome_ex_oauthsimple.js",
+      "helper.js",
+      "doxter-chrome.js"]
   },
 
   "options_page": "options.html"

@@ -24,8 +24,34 @@ function showStatus(message, success) {
 }
 
 
-function getCredentials() {
-    window.api_base_url = localStorage.getItem("doxter-api-base-url") ? localStorage.getItem("doxter-api-base-url") : "";
-    window.api_username = localStorage.getItem("doxter-api-username") ? localStorage.getItem("doxter-api-username") : "";
-    window.api_password = localStorage.getItem("doxter-api-password") ? localStorage.getItem("doxter-api-password") : "";
+function getSettings() {
+  window.api_base_url = localStorage.getItem("doxter-api-base-url") ? localStorage.getItem("doxter-api-base-url") : "";
+  window.api_username = localStorage.getItem("doxter-api-username") ? localStorage.getItem("doxter-api-username") : "";
+  window.api_password = localStorage.getItem("doxter-api-password") ? localStorage.getItem("doxter-api-password") : "";
+  window.api_sync_every = localStorage.getItem("doxter-api-sync-every") ? localStorage.getItem("doxter-api-sync-every") : "";
+  window.api_gcal_id = localStorage.getItem("doxter-api-gcal-id") ? localStorage.getItem("doxter-api-gcal-id") : "";
+  window.api_doxcal_id = localStorage.getItem("doxter-api-doxcal-id") ? localStorage.getItem("doxter-api-doxcal-id") : "";
+  window.api_last_synced = localStorage.getItem("doxter-api-last-synced") ? localStorage.getItem("doxter-api-last-synced") : "0";
 }
+
+function getOAuth() {
+  window.oauth = ChromeExOAuth.initBackgroundPage({
+      'request_url': 'https://www.google.com/accounts/OAuthGetRequestToken',
+      'authorize_url': 'https://www.google.com/accounts/OAuthAuthorizeToken',
+      'access_url': 'https://www.google.com/accounts/OAuthGetAccessToken',
+      'consumer_key': 'anonymous',
+      'consumer_secret': 'anonymous',
+//      'scope': 'https://www.googleapis.com/auth/calendar',
+'scope' : 'http://www.google.com/calendar/feeds/',
+      'app_name': 'doxter Chrome'
+  });
+}
+
+function stringify(parameters) {
+  var params = [];
+  for(var p in parameters) {
+    params.push(encodeURIComponent(p) + '=' +
+    encodeURIComponent(parameters[p]));
+  }
+  return params.join('&');
+};
