@@ -36,14 +36,14 @@ function getSettings() {
 
 function getOAuth() {
   window.oauth = ChromeExOAuth.initBackgroundPage({
-      'request_url': 'https://www.google.com/accounts/OAuthGetRequestToken',
-      'authorize_url': 'https://www.google.com/accounts/OAuthAuthorizeToken',
-      'access_url': 'https://www.google.com/accounts/OAuthGetAccessToken',
+      'request_url': 'https://www.google.com/o/oauth2/auth',
+      'authorize_url': 'https://www.google.com/o/oauth2/auth',
+      'access_url': 'https://www.google.com/o/oauth2/token',
       'consumer_key': 'anonymous',
       'consumer_secret': 'anonymous',
-//      'scope': 'https://www.googleapis.com/auth/calendar',
-'scope' : 'http://www.google.com/calendar/feeds/',
-      'app_name': 'doxter Chrome'
+      'scope': 'https://www.googleapis.com/auth/calendar',
+//'scope' : 'http://www.google.com/calendar/feeds/',
+      'app_name': 'doxter Chrome V2'
   });
 }
 
