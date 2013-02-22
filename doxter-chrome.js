@@ -28,7 +28,7 @@ else {
 
 function syncFromGcal() {
   //window.oauth.authorize(function() {
-  var url = "https://www.googleapis.com/calendar/v3/calendars/" + window.api_gcal_cid + "/events";
+  var url = "https://www.googleapis.com/calendar/v3/calendars/" + window.api_gcal_id + "/events";
   var params = {
     "timeMin": new Date(window.api_last_synced),
   }
