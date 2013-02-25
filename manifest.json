@@ -15,11 +15,18 @@
   "background": {
     "scripts": [
       "jquery-1.9.1.min.js",
-      "chrome_ex_oauth.js",
-      "chrome_ex_oauthsimple.js",
+      "oauth2/oauth2.js",
       "helper.js",
       "doxter-chrome.js"]
   },
 
-  "options_page": "options.html"
+  "options_page": "options.html",
+
+  "content_scripts": [
+    {
+      "matches": ["http://www.google.com/robots.txt*"],
+      "js": ["oauth2/oauth2_inject.js"],
+      "run_at": "document_start"
+    }
+  ]
 }
