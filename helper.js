@@ -2,6 +2,8 @@
 function doxConnect(args) {
   $.ajax({
     url: args.baseUrl+"/"+args.path,
+    method: (args.method ? args.method : "get"),
+    data: (args.data ? args.data : ""),
     headers: {"Authorization": "Basic "+btoa(args.username+":"+args.password) }, 
     success: function(data) { args.success(data) },
     error: function(data) { args.error(data) } 
@@ -34,8 +36,28 @@ function getSettings() {
   window.api_last_synced = localStorage.getItem("doxter-api-last-synced") ? localStorage.getItem("doxter-api-last-synced") : "0";
 }
 
-function getOAuth() {
-  window.oauth = OAuth2.getToken();
+function getAccessToken() {
+  var googleAuth = new OAuth2('google', {
+    client_id: "329184275271.apps.googleusercontent.com",
+    client_secret: "G4wqWbYxp1hegfw7CL1z5ik0",
+    api_scope: "https://www.googleapis.com/auth/calendar"
+  });
+
+  if(googleAuth.hasAccessToken()) {
+    if(!googleAuth.isAccessTokenExpired()) {
+      window.access_token = googleAuth.getAccessToken();
+    }
+    else {
+      googleAuth.authorize(function() {
+        window.access_token = googleAuth.getAccessToken();
+      });
+    }
+  }
+  else {
+    googleAuth.authorize(function() {
+      window.access_token = googleAuth.getToken();
+    });
+  }
 }
 
 function stringify(parameters) {

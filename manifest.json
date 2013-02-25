@@ -15,7 +15,7 @@
   "background": {
     "scripts": [
       "jquery-1.9.1.min.js",
-      "js/oauth2.js",
+      "oauth2/oauth2.js",
       "helper.js",
       "doxter-chrome.js"]
   },
@@ -25,7 +25,7 @@
   "content_scripts": [
     {
       "matches": ["http://www.google.com/robots.txt*"],
-      "js": ["js/injection.js"],
+      "js": ["oauth2/oauth2_inject.js"],
       "run_at": "document_start"
     }
   ]
