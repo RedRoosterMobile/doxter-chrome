@@ -4,7 +4,7 @@ getOAuth();
 
 // Sync every 60 seconds
 if(window.api_base_url && window.api_username && window.api_password) {
-  if(window.oauth.hasToken()) {
+  if(window.access_token) {
    
     var interval = window.api_sync_every ? window.api_sync_every : 60;
     window.api_gcal_id = window.api_gcal_id ? window.api_gcal_id : 'primary';
@@ -63,5 +63,10 @@ function syncToGcal() {
       }
     } 
   });
+}
+
+function refreshData() {
+  getSettings();
+  getOAuth();
 }
 

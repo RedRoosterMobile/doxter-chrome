@@ -58,7 +58,7 @@
 		 * Begin
 		 */
 		begin: function() {
-			var url = this._authorization_url + "?client_id=" + this._client_id + "&redirect_uri" + this._redirect_url + "&scope=";
+			var url = this._authorization_url + "?response_type=code" + "&access_type=offline" + "&client_id=" + this._client_id + "&redirect_uri=" + this._redirect_url + "&scope=" ;
 			
 			for(var i in this._scopes) {
 				url += this._scopes[i];
@@ -84,7 +84,7 @@
 				});
 			}
 			else {
-				this.requestToken(url.match(/\?code=([\w\/\-]+)/)[1]);
+				this.requestToken(url.match(/\?code=(.*)/)[1]);
 			}
 		},
 		
@@ -98,24 +98,42 @@
 			var data = new FormData();
 			data.append('client_id', this._client_id);
 			data.append('client_secret', this._client_secret);
-			data.append('code', code); 
+			data.append('code', code);
+      data.append('grant_type', 'authorization_code');
+      
+      $.ajax({
+        data: {
+          'code' : code,
+          'cliend_id' : this._client_id,
+          'client_secret' : this._client_secret,
+          'scope' : "",
+          'redirect_uri' : this._redirect_url,
+          'grant_type' : 'authorization_code'
+        },
+        type: "post",
+        url: this._access_token_url,
+        success: function(data) {
+          console.log(data);
+        }
+      });
+        
 
-			var xhr = new XMLHttpRequest();
-			xhr.addEventListener('readystatechange', function(event) {
-				if(xhr.readyState == 4) {
-					if(xhr.status == 200) {
-						that.finish(xhr.responseText.match(/access_token=([^&]*)/)[1]);
-					}
-					else {
-						chrome.tabs.getCurrent(function(tab) {
-							chrome.tabs.remove(tab.id, function(){});
-						});
-					}
-				}
-			});
-			xhr.open('POST', this._access_token_url, true);
-			xhr.send(data);
-		},
+			// var xhr = new XMLHttpRequest();
+// 			xhr.addEventListener('readystatechange', function(event) {
+// 				if(xhr.readyState == 4) {
+// 					if(xhr.status == 200) {
+// // 						that.finish(xhr.responseText.match(/access_token=([^&]*)/)[1]);
+// 					}
+// 					else {
+//						chrome.tabs.getCurrent(function(tab) {
+//							chrome.tabs.remove(tab.id, function(){});
+//						});
+// 					}
+// 				}
+// 			});
+// 			xhr.open('POST', this._access_token_url, true);
+// // 			xhr.send(data);
+ 		},
 		
 		/**
 		 * Finish
@@ -124,13 +142,14 @@
 		 */
 		finish: function(token) {
 			try {
-				window['localStorage'][this._key] = token;
+        localStorage.setItem('access_token', token); 
+				// window['localStorage'][this._key] = token;
 			}
 			catch(error) {}
 
-			chrome.tabs.getCurrent(function(tab) {
-				chrome.tabs.remove(tab.id, function() {});
-			});
+//			chrome.tabs.getCurrent(function(tab) {
+//				chrome.tabs.remove(tab.id, function() {});
+//			});
 		},
 		
 		
@@ -141,7 +160,7 @@
 		 */
 		getToken: function() {
 			try {
-				return window['localStorage'][this._key];
+				return localStorage.getItem("access_token");
 			}
 			catch(error) {
 				return null;
@@ -155,7 +174,7 @@
 		 */
 		deleteToken: function() {
 			try {
-				delete window['localStorage'][this._key];
+			  
 				return true;
 			}
 			catch(error) {
