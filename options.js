@@ -16,15 +16,6 @@ $(function() {
 
   // Get credentials from local storage
   getSettings();
-
-  if(window.backgroundPage.access_token) {
-    $("#gcal-auth").addClass("authorized").text("GCal is authorized");
-  }
-  else {
-    $("#gcal-auth").click(function() {
-      authorizeGcal();
-    });
-  }
   
   $("#api-base-url").attr("value", window.api_base_url);
   $("#username").attr("value", window.api_username);
@@ -80,11 +71,4 @@ $(function() {
       }
     });
   }
-
-  function authorizeGcal() {
-    OAuth2.begin();
-    // window.backgroundPage.oauth.authorize(function() {
-    //   $("#gcal-auth").addClass("authorized");
-    // });
-  }    
 });
