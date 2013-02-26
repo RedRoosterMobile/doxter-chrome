@@ -1,10 +1,11 @@
-// Get credentials and oauth from local storage
+// Get credentials from local storage
 getSettings();
-getAccessToken();
 
 // Sync every 60 seconds
 if(window.api_base_url && window.api_username && window.api_password) {
    
+  // Get Access-Token from local storage or google 
+  getAccessToken();
   window.interval = window.api_sync_every ? window.api_sync_every : 60;
   window.api_gcal_id = window.api_gcal_id ? window.api_gcal_id : 'primary';
   
@@ -22,6 +23,7 @@ if(window.api_base_url && window.api_username && window.api_password) {
 }
 else {
   alert("Go to options page and set base url, username and password!");
+  chrome.tabs.create({url: "options.html"});
 }
 
 
@@ -48,19 +50,21 @@ function syncGoogleToDoxter() {
         console.log("Saving event from Google to Doxter:");
         console.log(data.items[i]);
 
+        var message = "Created blocking:";
         var params = {
           "starts" : (new Date(data.items[i].start.dateTime)).toISOString(),
           "ends" : (new Date(data.items[i].end.dateTime)).toISOString()
         }
         // If id is found in description, reschedule
         if(data.items[i].description) {
-          match = data.items[i].description.match(/DXID=(.*)$/);
+          match = data.items[i].description.match(/DXID:(.*)$/);
           if(match) {
             params.id = match[1];
+            message = "Rescheduled Doxter event:";
           }
         }
 
-        var blockingId = undefined;
+        var blocking_id = undefined;
 
         // Insert blocking
         doxConnect({
@@ -72,16 +76,21 @@ function syncGoogleToDoxter() {
           username: window.api_username,
           password: window.api_password,
           success: function(data) {
-            console.log("Created blocking:");
+            console.log(message);
             console.log(data);
-            blockingId = data.id;
+            if(blocking_id != data.id) {
+              console.log("Something went wrong");
+            }
           },
           error: function(data) {
             console.log(data);
           }
         });
 
-        addBlockingIdToEvent(blocking_id, data.items[i]);
+        // Only save blocking ID, if event wasn't already reschelduled
+        if(!params.id) {
+          addBlockingIdToEvent(blocking_id, data.items[i]);
+        }
 
       }
     },
@@ -113,6 +122,8 @@ function syncDoxterToGoogle() {
     password: window.api_password,
     success: function(data) {
       var bookings = data;
+
+      notifyUser("img/48.png", "doxter Chrome", "2 new bookings on your doxter Account!");
 
       for(i = 0; i < bookings.length; i++) {
         console.log("Saving bookings from Doxter to Google:");
@@ -160,29 +171,29 @@ function syncDoxterToGoogle() {
 
 // Update Google Calendar entry with Doxter-ID
 function addBlockingIdToEvent(blocking_id, event_) {
-  var url = "https://www.googleapis.com/calendar/v3/calendars/" + window.api_gcal_id + "/events/"+event_.id;
+  var updateUrl = "https://www.googleapis.com/calendar/v3/calendars/" + window.api_gcal_id + "/events/"+event_.id;
   var updateParams = {
     "start" : {
-      "dateTime": (new Date(data.items[i].start)).toISOString()
+      "dateTime": (new Date(event_.start.dateTime)).toISOString()
     },
     "end" : {
-      "dateTime": (new Date(data.items[i].end)).toISOString()
+      "dateTime": (new Date(event_.end.dateTime)).toISOString()
     },
-    "description": (data.items[i].description ? data.items[i].description+"\n\n" : "") + "DXID:"+blocking_id
+    "description": (event_.description ? event_.description+"\n\n" : "") + "DXID:"+blocking_id
   }
 
   
   $.ajax({
-    url: url,
+    url: updateUrl,
     headers: {
       "Authorization": "OAuth " + window.access_token,
       "Content-Type": "application/json"
     },
-    type: "post",
+    type: "put",
     dataType: "json",
-    data: JSON.stringify(params),
+    data: JSON.stringify(updateParams),
     success: function(data) {
-      console.log("Created event:");
+      console.log("Added blocking ID to event:");
       console.log(data);
     },
     error: function(data) {

@@ -34,6 +34,7 @@ div.form hr {
 }
 
 div.form fieldset {
+  margin: 0px auto;
   margin-bottom: 30px;
 }
 

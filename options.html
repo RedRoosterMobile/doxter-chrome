@@ -8,7 +8,6 @@
 
 <script src="jsoneditor/jquery.min.js"></script>
 <script src="jsoneditor/jquery.jsoneditor.min.js"></script>
-<script src="js/oauth2.js"></script>
 <script src="helper.js"></script>
 <script src="options.js"></script>
 
@@ -22,16 +21,18 @@
       <legend>Required:</legend>
       
       <label for="api-base-url">API Base URL:</label>
-      <input type="text" name= "api-base-url" id="api-base-url" />
+      <input class="autosave" type="text" name= "api-base-url" id="api-base-url" />
 
       <label for="username">Username:</label>
-      <input type="text" name="username" id="username" />
+      <input class="autosave" type="text" name="username" id="username" />
 
       <label for="password">Password:</label>
-      <input type="text" name="password" id="password" />
+      <input class="autosave" type="password" name="password" id="password" />
 
-      <label for="doxcal-id">(Doxter-)Calendar ID:</label>
-      <input type="text" name="doxcal-id" id="doxcal-id" />
+      <label for="doxcal-id">Doxter Calendar:</label>
+      <select class="autosave" name="doxcal-id" id="doxcal-id">
+        <option value="placeholder">Insert credentials and test connection first!</option>
+      </select>
 
       
     </fieldset>

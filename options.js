@@ -3,7 +3,15 @@ $(function() {
   window.backgroundPage = chrome.extension.getBackgroundPage();
   
   $("#save").click(function() {
-    saveOptions();
+    saveOptions(true);
+  });
+
+  $(".autosave").change(function() {
+    saveOptions(false);
+  });
+
+  $(".autosave").bind('input', function() { 
+    saveOptions(false);
   });
 
   $("#connection-test").click(function() {
@@ -23,8 +31,15 @@ $(function() {
   $("#sync-every").attr("value", window.api_sync_every);
   $("#gcal-id").attr("value", window.api_gcal_id);
   $("#doxcal-id").attr("value", window.api_doxcal_id);
+  if(window.api_calendar_ids) {
+    insertDropdownForCalendarIds();
+  }
+  else {
+    $("#doxcal-id").val("placeholder");
+  }
 
-  function saveOptions() {
+
+  function saveOptions(verbose) {
     localStorage.setItem("doxter-api-base-url", $("#api-base-url").val());
     localStorage.setItem("doxter-api-username", $("#username").val());
     localStorage.setItem("doxter-api-password", $("#password").val());
@@ -34,9 +49,11 @@ $(function() {
     localStorage.setItem("doxter-api-gcal-id", $("#gcal-id").val());
     localStorage.setItem("doxter-api-doxcal-id", $("#doxcal-id").val());
 
-    showStatus("Saved", true);
+    if(verbose) {
+      showStatus("Saved", true);
+    }
     getSettings();
-    backgroundPage.refreshData();
+    backgroundPage.getSettings();
   }
 
   function connectionTest() {
@@ -47,6 +64,13 @@ $(function() {
       password: window.api_password,
       success: function(data) {
         showStatus("Success", true); 
+        calendars = {};
+        for(i = 0; i < data.length; i++) {
+          calendars[data[i].id] = data[i].name;
+        }
+        localStorage.setItem("doxter-api-calendar-ids", JSON.stringify(calendars));
+        window.api_calendar_ids = calendars;
+        insertDropdownForCalendarIds();
       },
       error: function(data) { showStatus("Error", false); }
     });
@@ -69,6 +93,16 @@ $(function() {
       error: function(data) {
         showStatus("Error", false);
       }
+    });
+  }
+  
+  function insertDropdownForCalendarIds() {
+    $("#doxcal-id").html("");
+    $.each(window.api_calendar_ids, function(key, value) {
+       $("#doxcal-id")
+        .append($("<option></option>")
+        .attr("value", key)
+        .text(value)); 
     });
   }
 });

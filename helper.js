@@ -3,7 +3,7 @@ function doxConnect(args) {
   $.ajax({
     url: args.baseUrl+"/"+args.path,
     method: (args.method ? args.method : "get"),
-    async: (args.async === undefined ? "true", args.async)
+    async: (args.async === undefined ? "true" : args.async),
     data: (args.data ? args.data : ""),
     headers: {"Authorization": "Basic "+btoa(args.username+":"+args.password) }, 
     success: function(data) { args.success(data) },
@@ -46,6 +46,8 @@ function getSettings() {
   window.api_last_synced_dtog = localStorage.getItem("doxter-api-last-synced-dtog") ? localStorage.getItem("doxter-api-last-synced-dtog") : "0";
   // Last synced Google->Doxter
   window.api_last_synced_gtod = localStorage.getItem("doxter-api-last-synced-gtod") ? localStorage.getItem("doxter-api-last-synced-gtod") : "0";
+  // Available calendar IDs for logged in user
+  window.api_calendar_ids = localStorage.getItem("doxter-api-calendar-ids") ? JSON.parse(localStorage.getItem("doxter-api-calendar-ids")) : null;
 }
 
 // Stores access_token in global variable
@@ -82,3 +84,9 @@ function stringify(parameters) {
   }
   return params.join('&');
 };
+
+// Helper function to show desktop notification
+function notifyUser(image, title, text) {
+  var notification = webkitNotifications.createNotification(image, title, text);
+  notification.show();
+}
