@@ -21,7 +21,12 @@
       "doxter-chrome.js"]
   },
 
-  "options_page": "options.html",
+  "browser_action": {
+    "default_title": "doxter Chrome",
+    "default_popup": "html/browseraction.html"
+  },
+
+  "options_page": "html/options.html",
 
   "content_scripts": [
     {
