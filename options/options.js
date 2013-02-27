@@ -1,21 +1,20 @@
 $(function() {
   
-  window.backgroundPage = chrome.extension.getBackgroundPage();
+  window.background_page = chrome.extension.getBackgroundPage();
   
   $("#save").click(function() {
     saveOptions(true);
+    if(!window.background_page.started_syncing) {
+      window.background_page.start();
+    }
   });
 
   $(".autosave").bind('input', function() { 
     saveOptions(false);
   });
 
-  $("#connection-test").click(function() {
-    connectionTest(); 
-  });
-
-  $("#console-execute").click(function() {
-    consoleExecute();
+  $("#fetch-calendars").click(function() {
+    fetchCalendars(); 
   });
 
   // Get credentials from local storage
@@ -46,20 +45,20 @@ $(function() {
     localStorage.setItem("doxter-api-doxcal-id", $("#doxcal-id").val());
 
     if(verbose) {
-      showStatus("Saved", true);
+      notifyUser("Daten gespeichert", "success48.png");
     }
     getSettings();
-    backgroundPage.getSettings();
+    background_page.getSettings();
   }
 
-  function connectionTest() {
+  function fetchCalendars() {
     doxConnect({
       baseUrl: window.api_base_url,
       path: "calendars",
       username: window.api_username,
       password: window.api_password,
       success: function(data) {
-        showStatus("Success", true); 
+        notifyUser("Kalender erfolgreich geholt! (Ihre Daten sind richtig)", "success48.png");
         calendars = {};
         for(i = 0; i < data.length; i++) {
           calendars[data[i].id] = data[i].name;
@@ -68,30 +67,20 @@ $(function() {
         window.api_calendar_ids = calendars;
         insertDropdownForCalendarIds();
       },
-      error: function(data) { showStatus("Error", false); }
-    });
-  }
-
-  function consoleExecute() {
-    $("span.msg-to-hide").hide();
-    $("img.spinner").fadeIn();
-    
-    doxConnect({
-      baseUrl: window.api_base_url,
-      path: $("#console-input").val(),
-      username: window.api_username,
-      password: window.api_password,
-      success: function(data) {
-        showStatus("Success", true);
-        $("#console-output").html("");
-        $("#console-output").jsonEditor(data);
-      },
       error: function(data) {
-        showStatus("Error", false);
+        var message = "Verbindung fehlgeschlagen!";
+        if(data.status == 401) {
+          message += " Server meldet: falsche Login-Daten";
+        }
+        else if(data.status == 404) {
+          message += " Server meldet: falsche URL";
+        }
+
+        notifyUser(message, "error48.png"); 
       }
     });
   }
-  
+
   function insertDropdownForCalendarIds() {
     $("#doxcal-id").html("");
     $.each(window.api_calendar_ids, function(key, value) {

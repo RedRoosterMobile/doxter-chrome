@@ -1,7 +1,6 @@
 {
-  // Required
   "name": "doxter Chrome",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "manifest_version": 2,
 
   "description": "Chrome Extension that utilizes the doxter-synchronization API",
@@ -15,18 +14,24 @@
   
   "background": {
     "scripts": [
-      "jquery-1.9.1.min.js",
+      "lib/jquery-1.9.1.min.js",
       "oauth2/oauth2.js",
-      "helper.js",
+      "lib/helper.js",
       "doxter-chrome.js"]
   },
 
   "browser_action": {
     "default_title": "doxter Chrome",
-    "default_popup": "html/browseraction.html"
+    "default_popup": "browseraction/browseraction.html"
   },
 
-  "options_page": "html/options.html",
+  "web_accessible_resources": [
+    "img/success48.png",
+    "img/error48.png",
+    "img/info48.png"
+  ],
+
+  "options_page": "options/options.html",
 
   "content_scripts": [
     {

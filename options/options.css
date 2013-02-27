@@ -1,5 +1,6 @@
 body {
   font-family: 'Impact', Charcoal, sans-serif;
+  background: #eff
 }
 
 div.form {
@@ -12,20 +13,22 @@ div.form {
   color: #000;
   text-decoration: none;
   -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
   border-radius: 10px;
   padding:10px auto;
   border: 1px solid #999;
   border: inset 1px solid #333;
   -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+  background: #eee;
   
   text-align: center;
 }
 
 div.form h1 {
-  font-size: 150%;
-  margin-top: 20px;
+  font-size: 175%;
+  margin-top: 50px;
+  text-decoration: underline;
+  font-weight: bold;
 }
 
 div.form hr {
@@ -44,9 +47,13 @@ div.form-inner {
   width: 320px;
   padding: 20px;
   border: 1px dotted;
+  border-radius: 5px;
+  -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+  background: #fef;
 }
 
-input {
+div.form input {
   width: 300px;
   display: block;
   border: 1px solid #999;
@@ -57,7 +64,7 @@ input {
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
 }
 
-button {
+div.form button {
   width:100px;
   bottom:20px;
   background:#000;
@@ -69,9 +76,13 @@ button {
   border: 1px solid #999;
 }
 
-button:hover {
+div.form button:hover {
   background:#fff;
   color:#000;
+}
+
+div.form select {
+  margin-bottom: 20px;
 }
 
 div#status {
@@ -121,4 +132,9 @@ button#gcal-auth {
 
 button.authorized#gcal-auth{
   background: rgb(160, 250, 160);
+}
+
+div#footer {
+  font-size: 75%;
+  text-align: center;
 }

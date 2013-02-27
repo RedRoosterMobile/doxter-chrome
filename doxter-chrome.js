@@ -1,29 +1,41 @@
 // Get credentials from local storage
 getSettings();
 
-// Sync every 60 seconds
-if(window.api_base_url && window.api_username && window.api_password) {
-   
-  // Get Access-Token from local storage or google 
-  getAccessToken();
-  window.interval = window.api_sync_every ? window.api_sync_every : 60;
-  window.api_gcal_id = window.api_gcal_id ? window.api_gcal_id : 'primary';
-  
-  window.setInterval(function() {
-    syncGoogleToDoxter();
-  }, window.interval * 1000);
+start();
 
-  // Always sync Google->Doxter first, wait 30 sec
-  window.setTimeout(function() {
+// Make sure access-token is valid every 20 minutes
+window.setInterval(getAccessToken, 20 * 60 * 1000);
+
+// Needed for browseraction popup display
+window.unconfirmed_bookings = Array();
+
+// Starts the whole syncing process
+function start() {
+
+  if(window.api_base_url && window.api_username && window.api_password && window.api_doxcal_id) {
+
+    // Get Access-Token from local storage or google 
+    getAccessToken();
+    window.interval = window.api_sync_every ? window.api_sync_every : 60;
+    window.api_gcal_id = window.api_gcal_id ? window.api_gcal_id : 'primary';
+
     window.setInterval(function() {
-      syncDoxterToGoogle();
+      syncGoogleToDoxter();
     }, window.interval * 1000);
-  }, 30 * 1000);
 
-}
-else {
-  alert("Go to options page and set base url, username and password!");
-  chrome.tabs.create({url: "options.html"});
+    // Always sync Google->Doxter first, wait 30 sec
+    window.setTimeout(function() {
+      window.setInterval(function() {
+        syncDoxterToGoogle();
+      }, window.interval * 1000);
+    }, 30 * 1000);
+
+    window.started_syncing = true;
+  }
+  else {
+    notifyUser("Bitte geben sie auf der Optionsseite ihre Daten ein!", "info48.png");
+    chrome.tabs.create({url: "options/options.html"});
+  }
 }
 
 
@@ -98,7 +110,7 @@ function syncGoogleToDoxter() {
       console.log(data);
     }
   });
-  
+
   // Set last synced to now
   window.api_last_synced_gtod = (new Date()).getTime();
   localStorage.setItem("doxter-api-last-synced-gtod", window.api_last_synced_gtod);
@@ -112,7 +124,7 @@ function syncDoxterToGoogle() {
   var params = {
     "updated": new Date(parseInt(window.api_last_synced_dtog)).toISOString()
   }
-        
+
 
   // Get bookings
   doxConnect({
@@ -123,7 +135,9 @@ function syncDoxterToGoogle() {
     success: function(data) {
       var bookings = data;
 
-      notifyUser("img/48.png", "doxter Chrome", "2 new bookings on your doxter Account!");
+      if(bookings.length) { 
+        notifyUser(bookings.length+" new bookings on your doxter Account!", "info48.png");
+      }
 
       for(i = 0; i < bookings.length; i++) {
         console.log("Saving bookings from Doxter to Google:");
@@ -140,7 +154,7 @@ function syncDoxterToGoogle() {
           "summary": bookings[i].title,
           "description": bookings[i].reason + "\n\nDXID:"+bookings[i].id
         }
-        
+
         // Insert event
         $.ajax({
           url: url,
@@ -160,9 +174,12 @@ function syncDoxterToGoogle() {
           }
         });
       }
-    } 
+    },
+    error: function(data) {
+      notifyUser("Es konnte keine Verbindung zur doxter API aufgebaut werden!", "error48.png");
+    }
   });
-  
+
   // Set last synced to now
   window.api_last_synced_dtog = (new Date()).getTime();
   localStorage.setItem("doxter-api-last-synced-dtog", window.api_last_synced_dtog);
@@ -201,9 +218,3 @@ function addBlockingIdToEvent(blocking_id, event_) {
     }
   });
 }
-
-// Used to refresh values after settings change
-function refreshData() {
-  getSettings();
-}
-

@@ -1,37 +1,38 @@
 <html>
 <head>
-<title>doxter Chrome Options</title>
+
+  <title>doxter Chrome Optionen</title>
+
+  <link href="options.css" rel="stylesheet" type="text/css" />
+
+  <script src="../lib/jquery-1.9.1.min.js"></script>
+  <script src="../lib/helper.js"></script>
+  <script src="options.js"></script>
+
 </head>
 
-<link href="options.css" rel="stylesheet" type="text/css" />
-<link href="jsoneditor/jsoneditor.css" rel="stylesheet" type="text/css" />
-
-<script src="jsoneditor/jquery.min.js"></script>
-<script src="jsoneditor/jquery.jsoneditor.min.js"></script>
-<script src="helper.js"></script>
-<script src="options.js"></script>
 
 <body>
 
 <div class="form">
 
-  <h1>doxter Chrome Options</h1>
+  <h1>doxter Chrome Optionen</h1>
   <div class="form-inner">
     <fieldset>
-      <legend>Required:</legend>
+      <legend>Pflichtfelder:</legend>
       
-      <label for="api-base-url">API Base URL:</label>
+      <label for="api-base-url">API Basis-URL:</label>
       <input class="autosave" type="text" name= "api-base-url" id="api-base-url" />
 
       <label for="username">Username:</label>
       <input class="autosave" type="text" name="username" id="username" />
 
-      <label for="password">Password:</label>
+      <label for="password">Passwort:</label>
       <input class="autosave" type="password" name="password" id="password" />
 
-      <label for="doxcal-id">Doxter Calendar:</label>
-      <select class="autosave" name="doxcal-id" id="doxcal-id">
-        <option value="placeholder">Insert credentials and test connection first!</option>
+      <label for="doxcal-id">Doxter Kalender:</label>
+      <select name="doxcal-id" id="doxcal-id">
+        <option value="placeholder">Daten eingeben und "Hole Kalender" dr&uuml;cken!</option>
       </select>
 
       
@@ -40,42 +41,23 @@
     <fieldset>
       <legend>Optional:</legend>
 
-      <label for="sync-every">Sync Interval (in sec):</label>
+      <label for="sync-every">Synchronisations Intervall (in sek):</label>
       <input type="text" name="sync-every" id="sync-every" />
       
-      <label for="gcal-id">Google Calendar ID:</label>
+      <label for="gcal-id">Google Kalender-ID:</label>
       <input type="text" name="gcal-id" id="gcal-id" />
 
     </fieldset>
-      <button id="save">Save</button>
-      <button id="connection-test">Test</button>
+      <button id="save">Speichern</button>
+      <button id="fetch-calendars">Hole Kalender</button>
       
   </div>
 </div>
 
-
-
-<div class="form" id="api-console">
-  <h1>API Console</h1>
-  <div class="form-inner">
-    <input type="text" id="console-input" />
-    <button id="console-execute">Execute</button>
-    <div class="json-editor" id="console-output">
-      <span class="msg-to-hide">Output goes here</span>
-      <img src="spinner.gif" class="spinner" /> 
-    </div>
-  </div>
+<div id="footer">
+Copyright (C) 2013 doxter GmbH
 </div>
-
-
-<div id="status">
-  <div id="status-inner">
-  </div>
-</div>
-
 
 </body>
-
-
 
 </html>
