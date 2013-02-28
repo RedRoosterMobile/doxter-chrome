@@ -7,7 +7,7 @@ start();
 window.setInterval(getAccessToken, 20 * 60 * 1000);
 
 // Needed for browseraction popup display
-window.unconfirmed_bookings = Array();
+window.unconfirmed_bookings = new Array();
 
 // Starts the whole syncing process
 function start() {
@@ -134,15 +134,15 @@ function syncDoxterToGoogle() {
     password: window.api_password,
     success: function(data) {
       var bookings = data;
-
-      if(bookings.length) { 
-        notifyUser(bookings.length+" new bookings on your doxter Account!", "info48.png");
-      }
+      var new_unconfirmed_bookings = new Array();
 
       for(i = 0; i < bookings.length; i++) {
         console.log("Saving bookings from Doxter to Google:");
         console.log(bookings[i]);
 
+        if(bookings[i].confirmation_link) {
+          new_unconfirmed_bookings.push(bookings[i]);
+        }
         var url = "https://www.googleapis.com/calendar/v3/calendars/" + window.api_gcal_id + "/events";
         var params = {
           "start": {
@@ -173,6 +173,11 @@ function syncDoxterToGoogle() {
             console.log(data);
           }
         });
+      }
+
+      if(new_unconfirmed_bookings.length) { 
+        notifyUser(bookings.length+" neue Buchungen auf ihrem Doxter Account!", "info48.png");
+        window.unconfirmed_bookings = window.unconfirmed_bookings.concat(new_unconfirmed_bookings);
       }
     },
     error: function(data) {
