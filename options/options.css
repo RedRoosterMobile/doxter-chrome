@@ -3,6 +3,10 @@ body {
   background: #eff
 }
 
+.dev {
+  display: none !important;
+}
+
 div.form {
   margin: auto;
   margin-bottom: 20px;
