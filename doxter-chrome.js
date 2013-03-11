@@ -12,7 +12,7 @@ function start() {
     getAccessToken(start_);
   }
   else {
-    notifyUser("Bitte geben sie auf der Optionsseite ihre Daten ein!", "info48.png");
+    notifyUser("doxter Chrome", "Bitte geben sie auf der Optionsseite ihre Daten ein!", "info48.png");
     chrome.tabs.create({url: "options/options.html"});
   }
 }
@@ -31,7 +31,6 @@ function start_() {
 
 // Well, what will this function do?
 function sync() {
-  var last_synced = Date.now();
   var doxter_data;
   var google_data;
 
@@ -45,7 +44,7 @@ function sync() {
   sendDataToDoxter(google_data);
   sendDataToGoogle(doxter_data);
 
-  window.api_last_synced = last_synced;
+  window.api_last_synced = Date.now();
 }
 
 // Receive bookings from Doxter
@@ -66,7 +65,7 @@ function getDataFromDoxter(callback) {
       callback(data);
     },
     error: function(data) {
-      notifyUser("Es konnte keine Verbindung zur doxter API aufgebaut werden!", "error48.png");
+      notifyUser("doxter Chrome", "Es konnte keine Verbindung zur doxter API aufgebaut werden!", "error48.png");
     }
   });
 }
@@ -102,6 +101,10 @@ function sendDataToDoxter(data) {
     return;
   }
   for(i = 0; i < data.items.length; i++) {
+    // Skip if start or end isn't given (cancelled events)
+    if(!data.items[i].start || !data.items[i].end) {
+      continue;
+    }
     console.log("Saving event from Google to Doxter:");
     console.log(data.items[i]);
 
@@ -164,8 +167,12 @@ function sendDataToGoogle(data) {
     console.log(bookings[i]);
 
     notifyUser(
-      bookings.length+' neue Buchungen auf ihrem Doxter Account!<br /><a href="' + confirmation_link + '">Buchung bestätigen</a>',
-      "info48.png"
+      bookings[i].title,
+      'Neue Buchung auf ihrem Doxter Account! Klicken sie auf dieses Fenster zum bestätigen!',
+      "info48.png",
+      function() {
+        chrome.tabs.create({url: "http://www.doxter.de"+confirmation_link});
+      }
     );
 
     var url = "https://www.googleapis.com/calendar/v3/calendars/" + window.api_gcal_id + "/events";

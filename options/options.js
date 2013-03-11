@@ -45,7 +45,7 @@ $(function() {
     localStorage.setItem("doxter-api-doxcal-id", $("#doxcal-id").val());
 
     if(verbose) {
-      notifyUser("Daten gespeichert", "success48.png");
+      notifyUser("doxter Chrome", "Daten gespeichert", "success48.png");
     }
     getSettings();
     background_page.getSettings();
@@ -58,7 +58,7 @@ $(function() {
       username: window.api_username,
       password: window.api_password,
       success: function(data) {
-        notifyUser("Kalender erfolgreich geholt! (Ihre Daten sind richtig)", "success48.png");
+        notifyUser("doxter Chrome", "Kalender erfolgreich geholt! (Ihre Daten sind richtig)", "success48.png");
         calendars = {};
         for(i = 0; i < data.length; i++) {
           calendars[data[i].id] = data[i].name;
@@ -76,7 +76,7 @@ $(function() {
           message += " Server meldet: falsche URL";
         }
 
-        notifyUser(message, "error48.png"); 
+        notifyUser("doxter Chrome", message, "error48.png"); 
       }
     });
   }

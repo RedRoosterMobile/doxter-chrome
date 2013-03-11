@@ -1,6 +1,6 @@
 {
   "name": "doxter Chrome",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "manifest_version": 2,
 
   "description": "Chrome Extension that utilizes the doxter-synchronization API",
