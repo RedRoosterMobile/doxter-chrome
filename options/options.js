@@ -61,7 +61,7 @@ $(function() {
         notifyUser("doxter Chrome", "Kalender erfolgreich geholt! (Ihre Daten sind richtig)", "success48.png");
         calendars = {};
         for(i = 0; i < data.length; i++) {
-          calendars[data[i].id] = data[i].name;
+          calendars[data[i]._id] = data[i].name;
         }
         localStorage.setItem("doxter-api-calendar-ids", JSON.stringify(calendars));
         window.api_calendar_ids = calendars;

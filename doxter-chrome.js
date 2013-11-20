@@ -184,7 +184,7 @@ function sendDataToGoogle(data) {
         "dateTime": (new Date(bookings[i].ends)).toISOString()
       },
       "summary": bookings[i].title,
-      "description": bookings[i].reason + "\n\nDXID:"+bookings[i].id
+      "description": bookings[i].reason + "\n\nDXID:"+bookings[i]._id
     }
 
     // Insert event
