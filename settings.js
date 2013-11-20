@@ -10,6 +10,7 @@ jQuery.extend(Doxter, {
       }
     }
   },
+
   Settings: [
     // Base URL of API, eg: http://www.doxter.de/api/v1
     new Doxter.Setting("baseUrl", "doxter-base-url", "http://www.doxter.de/api/v1"),
@@ -32,5 +33,5 @@ jQuery.extend(Doxter, {
   ],
 
   fetchSettings = function() {
-  
-
+  }
+});
