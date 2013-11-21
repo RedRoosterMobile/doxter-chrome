@@ -1,14 +1,8 @@
 Doxter = window.Doxter || {};
-
-// Fetch credentials and...
-Doxter.fetchSettings();
-// ..put it in the pipe
-Doxter.start();
-
 jQuery.extend(Doxter, {
   // Start syncing process, check everything
   start: function() {
-    if(self.Settings.baseUrl && self.Settings.username && self.Settings.password && self.Settings.doxcalId) {
+    if(this.Settings.baseUrl && this.Settings.username && this.Settings.password && this.Settings.doxcalId) {
       this.getAccessToken(this.start_);
     }
     else {
@@ -23,9 +17,9 @@ jQuery.extend(Doxter, {
       getAccessToken(function() {
         sync();
       });
-    }, self.Settings.syncEvery * 1000);
+    }, Doxter.Settings.syncEvery * 1000);
 
-    self.startedSyncing = true;
+    this.startedSyncing = true;
   },
 
   // Well, what will this function do?
@@ -33,15 +27,15 @@ jQuery.extend(Doxter, {
     var doxterData;
     var googleData;
 
-    getDataFromDoxter(function(data) {
+    this.getDataFromDoxter(function(data) {
       doxterData = data;
     });
-    getDataFromGoogle(function(data) {
+    this.getDataFromGoogle(function(data) {
       googleData = data;
     });
 
-    sendDataToDoxter(google_data);
-    sendDataToGoogle(doxter_data);
+    this.sendDataToDoxter(googleData);
+    this.sendDataToGoogle(doxterData);
   },
 
   // Receive bookings from Doxter
@@ -50,7 +44,7 @@ jQuery.extend(Doxter, {
     var self = this;
 
     var params = {
-      "updated": new Date(parseInt(self.)).toISOString()
+      "updated": new Date(parseInt(self.Settings.doxterToGoogle)).toISOString()
     };
 
     // Get bookings
@@ -82,7 +76,7 @@ jQuery.extend(Doxter, {
       async: false,
       url: url + "?" + stringify(params),
       headers: {
-        "Authorization": "OAuth " + window.access_token
+        "Authorization": "OAuth " + self.Google.accessToken
       },
       success: function(data) {
         callback(data);
@@ -243,3 +237,8 @@ jQuery.extend(Doxter, {
     });
   }
 });
+
+// Fetch credentials and...
+Doxter.fetchSettings();
+// ..put it in the pipe
+Doxter.start();

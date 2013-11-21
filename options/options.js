@@ -41,7 +41,7 @@ jQuery.extend(Doxter, {
         data.each(function(calendar) {
           calendars[calendar._id] = calendar.name;
         });
-        localStorage.setItem("calendar-ids", JSON.stringify(calendars));
+        localStorage.setItem("doxter-calendar-ids", JSON.stringify(calendars));
         self.Settings.calendarIds = calendars;
         self.insertDropdownForCalendarIds();
       },
@@ -61,6 +61,8 @@ jQuery.extend(Doxter, {
 
   insertDropdownForCalendarIds: function() {
     $("#doxcal-id").html("");
+    this.Settings.calendarIds =
+      this.Settings.calendarIds instanceof String ? this.Settings.calendarIds : JSON.parse(this.Settings.calendarIds);
     $.each(this.Settings.calendarIds, function(key, value) {
        $("#doxcal-id")
         .append($("<option></option>")
