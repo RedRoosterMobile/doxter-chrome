@@ -1,63 +1,94 @@
 <html>
-<head>
 
+<head>
   <title>doxter Chrome Optionen</title>
 
   <link href="options.css" rel="stylesheet" type="text/css" />
+  <link href="../css/bootstrap.min.css" rel="Stylesheet" />
 
   <script src="../lib/jquery-1.9.1.min.js"></script>
+  <script src="../lib/doxter.js"></script>
   <script src="../lib/helper.js"></script>
+  <script src="../lib/settings.js"></script>
   <script src="options.js"></script>
-
 </head>
 
 
 <body>
 
-<div class="form">
-
-  <h1>doxter Chrome Optionen</h1>
-  <div class="form-inner">
-    <fieldset>
-      <legend>Pflichtfelder:</legend>
-      
-      <label class="dev" for="api-base-url">API Basis-URL:</label>
-      <input class="dev autosave" type="text" name= "api-base-url" id="api-base-url" />
-
-      <label for="username">Username:</label>
-      <input class="autosave" type="text" name="username" id="username" />
-
-      <label for="password">Passwort:</label>
-      <input class="autosave" type="password" name="password" id="password" />
-
-      <label for="doxcal-id">Doxter Kalender:</label>
-      <select name="doxcal-id" id="doxcal-id">
-        <option value="placeholder">Daten eingeben und "Hole Kalender" dr&uuml;cken!</option>
-      </select>
-
-      
-    </fieldset>
-
-    <fieldset>
-      <legend>Optional:</legend>
-
-      <label for="sync-every">Synchronisations Intervall (in sek):</label>
-      <input type="text" name="sync-every" id="sync-every" />
-      
-      <label for="gcal-id">Google Kalender-ID:</label>
-      <input type="text" name="gcal-id" id="gcal-id" />
-
-    </fieldset>
-      <button id="save">Speichern</button>
-      <button id="fetch-calendars">Hole Kalender</button>
-      
+  <div class="alert alert-info" id="help">
+    <h3>Anleitung</h3>
+    <p>
+      <h4>Schritt 1</h4>
+      <ol>
+        <li>Username ausf&uuml;llen</li>
+        <li>Password ausf&uuml;llen</li>
+      </ol>
+      <h4>Schritt 2</h4>
+      <ol>
+        <li>"Doxter-Kalender"-Button klicken</li>
+        <li>Doxter-Kalender ausw&auml;hlen</li>
+        <li>"Google-Kalender"-Button klicken</li>
+        <li>Google-Kalender ausw&auml;hlen</li>
+      </ol>
+      <h4>Schritt 3</h4>
+      <ol>
+        <li>"Speichern"-Button klicken</li>
+        <li>Happy Syncing!</li>
+      </ol>
+    </p>
   </div>
-</div>
 
-<div id="footer">
-Copyright (C) 2013 doxter GmbH
-</div>
+  <div id="main" class="container">
+    <header>
+      <img src="../img/doxter-logo.png" />
+    </header>
 
+    <div class="form-inner">
+      <fieldset>
+        <legend>Pflichtfelder:</legend>
+
+        <label class="dev" for="base-url">API Basis-URL:</label>
+        <input class="form-control dev autosave" type="text" id="base-url" />
+
+        <label for="username">Username:</label>
+        <input class="form-control autosave" type="text" id="username" />
+
+        <label for="password">Passwort:</label>
+        <input class="form-control autosave" type="password" id="password" />
+
+        <label for="doxcal-id">Doxter Kalender:</label>
+        <select class="form-control" name="doxcal-id" id="doxcal-id">
+          <option value="placeholder">Daten eingeben und "Hole Kalender" dr&uuml;cken!</option>
+        </select>
+
+
+      </fieldset>
+    </div>
+
+    <div class="form-inner">
+      <fieldset>
+        <legend>Optional:</legend>
+
+        <label for="sync-every">Synchronisations Intervall (in sek):</label>
+        <input type="text" class="form-control" name="sync-every" id="sync-every" />
+
+        <label for="gcal-id">Google Kalender-ID:</label>
+        <input type="text" class="form-control" name="gcal-id" id="gcal-id" />
+      </fieldset>
+    </div>
+
+    <div class="form-inner">
+      <button class="btn btn-success" id="save">Speichern</button>
+      <button class="btn btn-warning" id="fetch-calendars">Doxter-Kalender</button>
+      <button class="btn btn-primary" id="fetch-calendars">Google-Kalender</button>
+    </div>
+
+    <footer>
+    Copyright (C) 2013 doxter GmbH
+    </footer>
+
+  </div>
 </body>
 
 </html>

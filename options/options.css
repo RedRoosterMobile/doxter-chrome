@@ -1,144 +1,37 @@
-body {
-  font-family: 'Impact', Charcoal, sans-serif;
-  background: #eff
+.container#main {
+  margin: 0 auto;
+  margin-top: 10px;
+  width: 400px;
 }
 
-.dev {
-  display: none !important;
-}
-
-div.form {
-  margin: auto;
-  margin-bottom: 20px;
-  position:relative;
-  width:550px;
-  line-height: 24px;
-  font-weight: bold;
-  color: #000;
-  text-decoration: none;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-  padding:10px auto;
-  border: 1px solid #999;
-  border: inset 1px solid #333;
-  -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-  background: #eee;
-  
+footer {
   text-align: center;
-}
-
-div.form h1 {
-  font-size: 175%;
-  margin-top: 50px;
-  text-decoration: underline;
-  font-weight: bold;
-}
-
-div.form hr {
-  margin-top: 50px;
-  margin-bottom: 50px;
-}
-
-div.form fieldset {
-  margin: 0px auto;
-  margin-bottom: 30px;
-}
-
-div.form-inner {
-  margin: 60px auto;
-  margin-bottom: 60px;
-  width: 320px;
-  padding: 20px;
-  border: 1px dotted;
-  border-radius: 5px;
-  -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-  background: #fef;
-}
-
-div.form input {
-  width: 300px;
-  display: block;
-  border: 1px solid #999;
-  height: 25px;
-  margin: 5px auto;
-  margin-bottom: 20px;
-  -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-}
-
-div.form button {
-  width:100px;
-  bottom:20px;
-  background:#000;
-  color:#fff;
-  font-family: Tahoma, Geneva, sans-serif;
-  height: 30px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  border: 1px solid #999;
-}
-
-div.form button:hover {
-  background:#fff;
-  color:#000;
-}
-
-div.form select {
-  margin-bottom: 20px;
-}
-
-div#status {
-  position: fixed;
-  right: 20px;
-  top: 5px;
-  border: 1px solid #000;
-  background: #ddd;
-  width: 150px;
-  height: 150px;
-  text-align: center;
-  border-radius: 5px;
-  display: none;
-}
-
-div#status-inner {
-  margin: 50px;
-  font-size: 150%;
-  height: 150px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: -15% 0 0 -25%;
-}
-
-div#console-output {
-  background: #eee;
-  border: 1px solid #000;
-  border-radius: 5px;
-  margin-top: 20px;
-  font-family: ‘Lucida Console’, Monaco, monospace;
-}
-
-img.spinner {
-  display: none;
-}
-
-button#gcal-auth {
-  background: rgb(250, 160, 160);
-  display: block;
-  margin: 20px auto;
-  margin-bottom: 50px;
-  padding: auto 15px;
-  height: 50px;
-  width: 300px;
-}
-
-button.authorized#gcal-auth{
-  background: rgb(160, 250, 160);
-}
-
-div#footer {
   font-size: 75%;
-  text-align: center;
+  margin-top: 30px;
+}
+
+label {
+  margin-top: 5px;
+}
+
+#help {
+  position: absolute;
+  left: 20px;
+  top: 120px;
+}
+
+#help h4 {
+  margin-top: 5px;
+}
+
+#help h3 {
+  text-decoration: underline;
+}
+
+.form-control {
+  max-width: 361px;
+}
+
+.form-inner {
+  margin-top: 20px;
 }

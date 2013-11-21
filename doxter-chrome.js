@@ -1,20 +1,18 @@
-// Get credentials from local storage
-getSettings();
+Doxter = window.Doxter || {};
 
-start();
+// Fetch credentials and...
+Doxter.fetchSettings();
+// ..put it in the pipe
+Doxter.start();
 
-// Needed for browseraction popup display
-window.unconfirmed_bookings = new Array();
-
-DoxterChrome = {
-
+jQuery.extend(Doxter, {
   // Start syncing process, check everything
   start: function() {
-    if(window.api_base_url && window.api_username && window.api_password && window.api_doxcal_id) {
-      getAccessToken(start_);
+    if(self.Settings.baseUrl && self.Settings.username && self.Settings.password && self.Settings.doxcalId) {
+      this.getAccessToken(this.start_);
     }
     else {
-      notifyUser("doxter Chrome", "Bitte geben sie auf der Optionsseite ihre Daten ein!", "info48.png");
+      this.notifyUser("doxter Chrome", "Bitte geben sie auf der Optionsseite ihre Daten ein!", "info48.png");
       chrome.tabs.create({url: "options/options.html"});
     }
   },
@@ -25,43 +23,40 @@ DoxterChrome = {
       getAccessToken(function() {
         sync();
       });
-    }, window.api_sync_every * 1000);
+    }, self.Settings.syncEvery * 1000);
 
-    window.started_syncing = true;
+    self.startedSyncing = true;
   },
 
   // Well, what will this function do?
   sync: function() {
-    var doxter_data;
-    var google_data;
+    var doxterData;
+    var googleData;
 
     getDataFromDoxter(function(data) {
-      doxter_data = data;
+      doxterData = data;
     });
     getDataFromGoogle(function(data) {
-      google_data = data;
+      googleData = data;
     });
-    
+
     sendDataToDoxter(google_data);
     sendDataToGoogle(doxter_data);
-
-    window.api_last_synced = Date.now();
   },
 
   // Receive bookings from Doxter
   getDataFromDoxter: function(callback) {
-    var params = {
-      "updated": new Date(parseInt(window.api_last_synced)).toISOString()
-    }
 
+    var self = this;
+
+    var params = {
+      "updated": new Date(parseInt(self.)).toISOString()
+    };
 
     // Get bookings
-    doxConnect({
+    self.connectToDoxter({
       async: false,
-      baseUrl: window.api_base_url,
-      path: "calendars/"+window.api_doxcal_id + "/events?" + stringify(params),
-      username: window.api_username,
-      password: window.api_password,
+      path: "calendars/" + self.Settings.doxcalId + "/events?" + stringify(params),
       success: function(data) {
         callback(data);
       },
@@ -73,10 +68,12 @@ DoxterChrome = {
 
   // Receive events from Google
   getDataFromGoogle: function(callback) {
-    
-    var url = "https://www.googleapis.com/calendar/v3/calendars/" + window.api_gcal_id + "/events";
+
+    var self = this;
+
+    var url = "https://www.googleapis.com/calendar/v3/calendars/" + self.Settings.gcalId + "/events";
     var params = {
-      "updatedMin": (new Date(parseInt(window.api_last_synced))).toISOString(),
+      "updatedMin": (new Date(parseInt(self.Settings.googleToDoxter))).toISOString(),
     }
 
 
@@ -95,51 +92,51 @@ DoxterChrome = {
       }
     });
   },
-  
+
   // Send Google-Data to Doxter
   sendDataToDoxter: function(data) {
+
+    var self = this;
+
     if(!data.items) {
       return;
     }
-    for(i = 0; i < data.items.length; i++) {
+    data.items.each(function(item) {
       // Skip if start or end isn't given (cancelled events)
-      if(!data.items[i].start || !data.items[i].end) {
+      if(!item.start || !item.end) {
         continue;
       }
       console.log("Saving event from Google to Doxter:");
-      console.log(data.items[i]);
+      console.log(item);
 
       var message = "Created blocking:";
       var params = {
-        "starts" : (new Date(data.items[i].start.dateTime)).toISOString(),
-        "ends" : (new Date(data.items[i].end.dateTime)).toISOString()
+        "starts" : (new Date(item.start.dateTime)).toISOString(),
+        "ends" : (new Date(item.end.dateTime)).toISOString()
       }
       // If id is found in description, reschedule
-      if(data.items[i].description) {
-        match = data.items[i].description.match(/DXID:(.*)$/);
+      if(item.description) {
+        match = item.description.match(/DXID:(.*)$/);
         if(match) {
           params.id = match[1];
           message = "Rescheduled Doxter event with ID: " + params.id;
         }
       }
-      
-      var blocking_id = undefined;
+
+      var blockingId = undefined;
 
       // Insert blocking
-      doxConnect({
-        baseUrl: window.api_base_url,
+      self.connectToDoxter({
         method: "post",
         async: false,
-        path: "calendars/"+window.api_doxcal_id + "/events",
+        path: "calendars/" + self.Settings.doxcalId + "/events",
         data: params,
-        username: window.api_username,
-        password: window.api_password,
         success: function(data) {
           console.log(message);
           if(!params.id) {
             console.log(data);
           }
-          blocking_id = data._id;
+          blockingId = data._id;
         },
         error: function(data) {
           console.log(data);
@@ -148,44 +145,45 @@ DoxterChrome = {
 
       // Only save blocking ID, if event wasn't already reschelduled
       if(!params.id) {
-        addBlockingIdToEvent(blocking_id, data.items[i]);
+        addBlockingIdToEvent(blockingId, item);
       }
-    }
+    });
   },
 
   // Send Doxter-Data to Google
   sendDataToGoogle: function(data) {
-    var bookings = data;
 
-    for(i = 0; i < bookings.length; i++) {
+    var self = this;
+
+    data.each(function(booking) {
       // If there is no confirmation_token, the booking was rescheduled
-      var confirmation_link = bookings[i].confirmation_link;
-      if(!confirmation_link.match(/confirmation_token/)) {
+      var confirmationLink = booking.confirmationLink;
+      if(!confirmationLink.match(/confirmation_token/)) {
         continue;
       }
-      
+
       console.log("Saving booking from Doxter to Google:");
-      console.log(bookings[i]);
+      console.log(booking);
 
       notifyUser(
-        bookings[i].title,
+        booking.title,
         'Neue Buchung auf ihrem Doxter Account! Klicken sie auf dieses Fenster zum bestätigen!',
         "info48.png",
         function() {
-          chrome.tabs.create({url: "http://www.doxter.de"+confirmation_link});
+          chrome.tabs.create({url: "http://www.doxter.de"+confirmationLink});
         }
       );
 
-      var url = "https://www.googleapis.com/calendar/v3/calendars/" + window.api_gcal_id + "/events";
+      var url = "https://www.googleapis.com/calendar/v3/calendars/" + self.Settings.gcalId + "/events";
       var params = {
         "start": {
-          "dateTime": (new Date(bookings[i].starts)).toISOString()
+          "dateTime": (new Date(booking.starts)).toISOString()
         },
         "end": {
-          "dateTime": (new Date(bookings[i].ends)).toISOString()
+          "dateTime": (new Date(booking.ends)).toISOString()
         },
-        "summary": bookings[i].title,
-        "description": bookings[i].reason + "\n\nDXID:"+bookings[i].id
+        "summary": booking.title,
+        "description": booking.reason + "\n\nDXID:"+booking.id
       }
 
       // Insert event
@@ -193,7 +191,7 @@ DoxterChrome = {
         async: false,
         url: url,
         headers: {
-          "Authorization": "OAuth " + window.access_token,
+          "Authorization": "OAuth " + self.Google.accessToken,
           "Content-Type": "application/json"
         },
         type: "post",
@@ -207,12 +205,15 @@ DoxterChrome = {
           console.log(data);
         }
       });
-    }
+    });
   },
 
   // Update Google Calendar entry with Doxter-ID
-  addBlockingIdToEvent: function(blocking_id, event_) {
-    var updateUrl = "https://www.googleapis.com/calendar/v3/calendars/" + window.api_gcal_id + "/events/"+event_.id;
+  addBlockingIdToEvent: function(blockingId, event_) {
+
+    var self = this;
+
+    var updateUrl = "https://www.googleapis.com/calendar/v3/calendars/" + self.Settings.gcalId + "/events/"+event_.id;
     var updateParams = {
       "start" : {
         "dateTime": (new Date(event_.start.dateTime)).toISOString()
@@ -220,14 +221,13 @@ DoxterChrome = {
       "end" : {
         "dateTime": (new Date(event_.end.dateTime)).toISOString()
       },
-      "description": (event_.description ? event_.description+"\n\n" : "") + "DXID:"+blocking_id
+      "description": (event_.description ? event_.description+"\n\n" : "") + "DXID:"+blockingId
     }
 
-    
     $.ajax({
       url: updateUrl,
       headers: {
-        "Authorization": "OAuth " + window.access_token,
+        "Authorization": "OAuth " + self.Google.accessToken,
         "Content-Type": "application/json"
       },
       type: "put",
@@ -242,4 +242,4 @@ DoxterChrome = {
       }
     });
   }
-}
+});
