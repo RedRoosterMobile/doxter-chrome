@@ -1,0 +1,1 @@
+Doxter = window.Doxter || {};
