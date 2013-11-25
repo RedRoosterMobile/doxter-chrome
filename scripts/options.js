@@ -1,6 +1,6 @@
 head.scriptPath = '../scripts';
 
-head.load(head.makePaths(['lib/jquery', 'doxter']), function() {
+head.load(head.makePaths(['lib/jquery', 'doxter', 'helper/settings', 'helper/options']), function() {
   $(function() {
     Doxter = window.Doxter;
     Doxter.backgroundPage = chrome.extension.getBackgroundPage();
@@ -13,8 +13,12 @@ head.load(head.makePaths(['lib/jquery', 'doxter']), function() {
       }
     });
 
-    $("#fetch-calendars").click(function() {
-      Doxter.fetchCalendars(); 
+    $("#fetch-doxter-calendars").click(function() {
+      Doxter.fetchDoxterCalendars(); 
+    });
+
+    $("#fetch-google-calendars").click(function() {
+      Doxter.fetchGoogleCalendars(); 
     });
 
     // Get credentials from local storage

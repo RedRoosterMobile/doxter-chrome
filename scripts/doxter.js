@@ -32,32 +32,34 @@ window.Doxter = {
   // Google Related
   /////////////////
 
-  Google: {},
+  Google: {
 
-  // Stores access_token in global variable
-  getAccessToken: function(callback) {
+    API_BASE_URL: "https://www.googleapis.com/calendar/v3/calendars/",
 
-    var self = this;
+    getAccessToken: function(callback) {
 
-    if(!self.Google.auth) {
-      self.Google.auth = new OAuth2('google', {
-        client_id: "329184275271.apps.googleusercontent.com",
-        client_secret: "G4wqWbYxp1hegfw7CL1z5ik0",
-        api_scope: "https://www.googleapis.com/auth/calendar"
-      });
-    }
+      var self = this;
 
-    if(self.Google.auth.hasAccessToken() && !self.Google.auth.isAccessTokenExpired()) {
-      self.Google.accessToken = self.Google.auth.getAccessToken();
-      callback();
-    }
-    else {
-      self.Google.auth.authorize(function() {
-        self.Google.accessToken = self.Google.auth.getToken();
+      if(!self.Google.auth) {
+        self.Google.auth = new OAuth2('google', {
+          client_id: "329184275271.apps.googleusercontent.com",
+          client_secret: "G4wqWbYxp1hegfw7CL1z5ik0",
+          api_scope: "https://www.googleapis.com/auth/calendar"
+        });
+      }
+
+      if(self.Google.auth.hasAccessToken() && !self.Google.auth.isAccessTokenExpired()) {
+        self.Google.accessToken = self.Google.auth.getAccessToken();
         callback();
-      });
-    }
-  },
+      }
+      else {
+        self.Google.auth.authorize(function() {
+          self.Google.accessToken = self.Google.auth.getAccessToken();
+          callback();
+        });
+      }
+    }, // getAccessToken
+  }, // Google {}
 
   ///////////
   // Helpers
@@ -110,54 +112,6 @@ window.Doxter = {
     }, 4000);
   },
 
-  /////////////
-  // Settings
-  ////////////
-
-  LOCAL_STORAGE_PREFIX: "doxter-",
-
-  Setting: function(varName, standardValue) {
-    this.localStorageName = Doxter.LOCAL_STORAGE_PREFIX + varName;
-    this.value = standardValue;
-    this.camelCaseName = Doxter.convertToCamelCase(varName);
-    this.domName = varName;
-    this.fetch = function() {
-      var val = localStorage.getItem(this.localStorageName);
-      if(val) {
-        this.value = val;
-      }
-      return this;
-    };
-    this.save = function() {
-      var val = $('#'+this.domName).val();
-      if(val) {
-        localStorage.setItem(this.localStorageName, $('#'+this.domName).val());
-      }
-      return this;
-    };
-  },
-
-  Settings: {},
-  _settings: [],
-
-  fetchSettings: function() {
-    var self = this;
-    this._settings.each(function(setting) {
-      self.Settings[setting.camelCaseName] = setting.fetch().value;
-    });
-    // Make sure we fetch settings also for bg-page
-    if(self.backgroundPage) {
-      self.backgroundPage.Doxter.fetchSettings();
-    }
-  },
-
-  saveSettings: function() {
-    this._settings.each(function(setting) {
-      setting.save();
-    });
-    this.fetchSettings();
-  },
-
   //////////
   // Sync
   /////////
@@ -165,7 +119,7 @@ window.Doxter = {
   // Start syncing process, check everything
   start: function() {
     if(this.Settings.baseUrl && this.Settings.username && this.Settings.password && this.Settings.doxcalId) {
-      this.getAccessToken(this.start_);
+      this.Google.getAccessToken(this.start_);
     }
     else {
       this.notifyUser("doxter Chrome", "Bitte geben sie auf der Optionsseite ihre Daten ein!", "info48.png");
@@ -176,7 +130,7 @@ window.Doxter = {
   // Actually starts the process, internal function
   start_: function() {
     window.setInterval(function() {
-      getAccessToken(function() {
+      this.Google.getAccessToken(function() {
         sync();
       });
     }, Doxter.Settings.syncEvery * 1000);
@@ -254,13 +208,10 @@ window.Doxter = {
 
     var self = this;
 
-    if(!data.items) {
-      return;
-    }
     data.items.each(function(item) {
       // Skip if start or end isn't given (cancelled events)
       if(!item.start || !item.end) {
-        continue;
+        return;
       }
       console.log("Saving event from Google to Doxter:");
       console.log(item);
@@ -303,8 +254,8 @@ window.Doxter = {
       if(!params.id) {
         addBlockingIdToEvent(blockingId, item);
       }
-    });
-  },
+    }); // data.items.each
+  }, // sendDataToGoogle
 
   // Send Doxter-Data to Google
   sendDataToGoogle: function(data) {
@@ -399,10 +350,6 @@ window.Doxter = {
     });
   },
 
-  ///////////////
-  // Option Page
-  ///////////////
-
   fetchCalendars: function() {
     var self = this;
 
@@ -452,24 +399,3 @@ window.Doxter = {
     });
   }
 }; // Doxter
-
-Doxter._settings = [
-    // Base URL of API, eg: http://www.doxter.de/api/v1
-    new Doxter.Setting("base-url", "http://www.doxter.de/api/v1"),
-    // Doxter username of user managing calendar
-    new Doxter.Setting("username", ""),
-    // Doxter password of user managing calendar
-    new Doxter.Setting("password", ""),
-    // Determines how often plugin should sync
-    new Doxter.Setting("sync-every", "60"),
-    // ID of Google Calendar (use 'primary' for standard Calendar)
-    new Doxter.Setting("gcal-id", "primary"),
-    // ID of Doxter Calendar
-    new Doxter.Setting("doxcal-id", ""),
-    // Last synced
-    new Doxter.Setting("doxter-to-google", ""),
-    new Doxter.Setting("google-to-doxter", ""),
-    // Calendar Ids fetched
-    new Doxter.Setting("calendar-ids", "")
-];
-

@@ -5,7 +5,7 @@
 // NOTE: Extending it here, so I really have to load only this file
 head.makePaths = function(scriptArray) {
   var res = [];
-  for(var i = 0; i < scriptArray.length - 1; i++) {
+  for(var i = 0; i < scriptArray.length; i++) {
     res.push(this.scriptPath + '/' + scriptArray[i] + '.js');
   }
   return res;

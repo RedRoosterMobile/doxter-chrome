@@ -1,4 +1,9 @@
+//////////
+// Sync
+/////////
+
 Doxter = window.Doxter || {};
+
 jQuery.extend(Doxter, {
   // Start syncing process, check everything
   start: function() {
@@ -65,11 +70,10 @@ jQuery.extend(Doxter, {
 
     var self = this;
 
-    var url = "https://www.googleapis.com/calendar/v3/calendars/" + self.Settings.gcalId + "/events";
+    var url = self.GOOGLE_API_BASE_URL + "/calendars/" + self.Settings.gcalId + "/events";
     var params = {
       "updatedMin": (new Date(parseInt(self.Settings.googleToDoxter))).toISOString(),
     }
-
 
     // Get events
     $.ajax({
@@ -236,9 +240,4 @@ jQuery.extend(Doxter, {
       }
     });
   }
-});
-
-// Fetch credentials and...
-Doxter.fetchSettings();
-// ..put it in the pipe
-Doxter.start();
+}); // jQuery.extend
