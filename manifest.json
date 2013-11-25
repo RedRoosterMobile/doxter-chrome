@@ -13,11 +13,6 @@
   ],
   
   "background": {
-    "scripts": [
-      "lib/jquery-1.9.1.min.js",
-      "oauth2/oauth2.js",
-      "lib/helper.js",
-      "doxter-chrome.js"]
   },
 
   "web_accessible_resources": [
