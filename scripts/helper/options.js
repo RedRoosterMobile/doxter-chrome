@@ -12,30 +12,22 @@ jQuery.extend(Doxter, {
 
     self.Google.getAccessToken(function() {
       $.ajax({
-        url: self.Google.API_BASE_URL + "calendars/list",
+        url: self.Google.API_BASE_URL + "/users/me/calendarList",
         headers: {
           "Authorization": "OAuth " + self.Google.accessToken
         },
         success: function(data) {
           Doxter.notifyUser("doxter Chrome", "Google Kalender erfolgreich geholt!", "success48.png");
           calendars = {};
-          data.each(function(calendar) {
-            calendars[calendar._id] = calendar.name;
+          data.items.each(function(calendar) {
+            calendars[calendar.id] = calendar.summary;
           });
           localStorage.setItem("doxter-google-calendar-ids", JSON.stringify(calendars));
           self.Settings.googleCalendarIds = calendars;
           self.insertDropdownForCalendarIds();
         },
         error: function(data) {
-          var message = "Verbindung fehlgeschlagen!";
-          if(data.status == 401) {
-            message += "Server meldet: falsche Login-Daten";
-          }
-          else if(data.status == 404) {
-            message += "Server meldet: falsche URL";
-          }
-
-          self.notifyUser("doxter Chrome", message, "error48.png"); 
+          self.errorMessage(data.status);
         }
       });
     });
@@ -59,17 +51,21 @@ jQuery.extend(Doxter, {
         self.insertDropdownForCalendarIds();
       },
       error: function(data) {
-        var message = "Verbindung fehlgeschlagen!";
-        if(data.status == 401) {
-          message += "Server meldet: falsche Login-Daten";
-        }
-        else if(data.status == 404) {
-          message += "Server meldet: falsche URL";
-        }
-
-        self.notifyUser("doxter Chrome", message, "error48.png"); 
+        self.errorMessage(data.status);
       }
     });
+  },
+
+  errorMessage: function(statusCode) {
+    var message = "Verbindung fehlgeschlagen!";
+    if(statusCode == 401) {
+      message += "Server meldet: falsche Login-Daten";
+    }
+    else if(statusCode == 404) {
+      message += "Server meldet: falsche URL";
+    }
+
+    self.notifyUser("doxter Chrome", message, "error48.png"); 
   },
 
   insertDropdownForCalendarIds: function() {
