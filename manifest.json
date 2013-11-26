@@ -3,7 +3,7 @@
   "version": "1.1.2",
   "manifest_version": 2,
 
-  "description": "Chrome Extension that utilizes the doxter-synchronization API",
+  "description": "Chrome Extension that utilizes the doxter-API and Google Calendar API",
 
   "permissions": [
     "tabs",
@@ -13,6 +13,12 @@
   ],
   
   "background": {
+  },
+
+  "icons": {
+    "16" : "img/doxter-icon-16.png",
+    "48" : "img/doxter-icon-48.png",
+    "128" : "img/doxter-icon-128.png"
   },
 
   "web_accessible_resources": [
