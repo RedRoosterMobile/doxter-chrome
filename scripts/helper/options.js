@@ -11,11 +11,8 @@ jQuery.extend(Doxter, {
     self.saveSettings();
 
     self.Google.getAccessToken(function() {
-      $.ajax({
-        url: self.Google.API_BASE_URL + "/users/me/calendarList",
-        headers: {
-          "Authorization": "OAuth " + self.Google.accessToken
-        },
+      self.Google.connect({
+        path: "users/me/calendarList",
         success: function(data) {
           Doxter.notifyUser("doxter Chrome", "Google Kalender erfolgreich geholt!", "success48.png");
           calendars = {};
@@ -38,7 +35,7 @@ jQuery.extend(Doxter, {
 
     self.saveSettings();
 
-    Doxter.connectToDoxter({
+    self.connectToDoxter({
       path: "calendars",
       success: function(data) {
         Doxter.notifyUser("doxter Chrome", "Kalender erfolgreich geholt! (Ihre Daten sind richtig)", "success48.png");

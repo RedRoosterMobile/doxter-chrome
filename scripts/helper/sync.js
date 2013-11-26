@@ -76,12 +76,9 @@ jQuery.extend(Doxter, {
     }
 
     // Get events
-    $.ajax({
+    self.Google.connect({
       async: false,
-      url: url + "?" + stringify(params),
-      headers: {
-        "Authorization": "OAuth " + self.Google.accessToken
-      },
+      path: "/calendars/" + self.Settings.gcalId + "/events" + "?" + stringify(params),
       success: function(data) {
         callback(data);
       },
@@ -185,13 +182,12 @@ jQuery.extend(Doxter, {
       }
 
       // Insert event
-      $.ajax({
+      self.Google.connect({
         async: false,
-        url: url,
-        headers: {
-          "Authorization": "OAuth " + self.Google.accessToken,
-          "Content-Type": "application/json"
-        },
+        path: "calendars/" + self.Settings.gcalId + "/events",
+        //headers: {
+        // "Content-Type": "application/json"
+        //},
         type: "post",
         dataType: "json",
         data: JSON.stringify(params),
@@ -222,12 +218,11 @@ jQuery.extend(Doxter, {
       "description": (event_.description ? event_.description+"\n\n" : "") + "DXID:"+blockingId
     }
 
-    $.ajax({
-      url: updateUrl,
-      headers: {
-        "Authorization": "OAuth " + self.Google.accessToken,
-        "Content-Type": "application/json"
-      },
+    self.Google.connect({
+      url: "calendars/" + self.Settings.gcalId + "/events/"+event_.id,
+      //headers: {
+      //  "Content-Type": "application/json"
+      //},
       type: "put",
       dataType: "json",
       data: JSON.stringify(updateParams),

@@ -59,6 +59,20 @@ window.Doxter = {
         });
       }
     }, // getAccessToken
+
+    connect: function(args) {
+      var self = this;
+
+      $.ajax({
+        url: self.API_BASE_URL+"/"+args.path,
+        method: (args.method ? args.method : "get"),
+        async: (args.async === undefined ? "true" : args.async),
+        data: (args.data ? args.data : ""),
+        success: function(data) { args.success(data) },
+        error: function(data) { args.error(data) } 
+        headers: { "Authorization": "OAuth " + self.accessToken }
+      });
+    }
   }, // Google {}
 
   ///////////
