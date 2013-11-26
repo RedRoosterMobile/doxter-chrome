@@ -19,8 +19,8 @@ jQuery.extend(Doxter, {
       }
       return this;
     };
-    this.save = function() {
-      var val = $('#'+this.domName).val();
+    this.save = function(value) {
+      var val = value || $('#'+this.domName).val();
       if(val) {
         localStorage.setItem(this.localStorageName, $('#'+this.domName).val());
       }
@@ -35,6 +35,7 @@ jQuery.extend(Doxter, {
     var self = this;
     this._settings.each(function(setting) {
       self.Settings[setting.camelCaseName] = setting.fetch().value;
+      self.Settings[setting.camelCaseName].setting = setting;
     });
     // Make sure we fetch settings also for bg-page
     if(self.backgroundPage) {

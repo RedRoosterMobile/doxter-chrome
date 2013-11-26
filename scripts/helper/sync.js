@@ -34,9 +34,11 @@ jQuery.extend(Doxter, {
 
     this.getDataFromDoxter(function(data) {
       doxterData = data;
+      self.Settings.doxterToGoogle.setting.save(Date.now());
     });
     this.getDataFromGoogle(function(data) {
       googleData = data;
+      self.Settings.googleTo.googleToDoxter.setting.save(Date.now());
     });
 
     this.sendDataToDoxter(googleData);
@@ -48,19 +50,22 @@ jQuery.extend(Doxter, {
 
     var self = this;
 
-    var params = {
-      "updated": new Date(parseInt(self.Settings.doxterToGoogle)).toISOString()
-    };
+    var params = (function() {
+      var timestamp = (self.Settings.doxterToGoogle ? parseInt(self.Settings.doxterToGoogle) : 0);
+      return "?" + Doxter.stringify({
+        "updated": new Date(timestamp).toISOString()
+      });
+    })();
 
     // Get bookings
     self.connectToDoxter({
       async: false,
-      path: "calendars/" + self.Settings.doxcalId + "/events?" + stringify(params),
+      path: "calendars/" + self.Settings.doxcalId + "/events" + params,
       success: function(data) {
         callback(data);
       },
       error: function(data) {
-        notifyUser("doxter Chrome", "Es konnte keine Verbindung zur doxter API aufgebaut werden!", "error48.png");
+        self.notifyUser("doxter Chrome", "Es konnte keine Verbindung zur doxter API aufgebaut werden!", "error48.png");
       }
     });
   },
@@ -70,15 +75,21 @@ jQuery.extend(Doxter, {
 
     var self = this;
 
-    var url = self.GOOGLE_API_BASE_URL + "/calendars/" + self.Settings.gcalId + "/events";
-    var params = {
-      "updatedMin": (new Date(parseInt(self.Settings.googleToDoxter))).toISOString(),
-    }
+    var params = (function() {
+      if(self.Settings.googleToDoxter) {
+        return "?" + Doxter.stringify({
+          "updatedMin": new Date(parseInt(self.Settings.googleToDoxter)).toISOString()
+        });
+      }
+      else {
+        return "";
+      }
+    })();
 
     // Get events
     self.Google.connect({
       async: false,
-      path: "/calendars/" + self.Settings.gcalId + "/events" + "?" + stringify(params),
+      path: "calendars/" + self.Settings.gcalId + "/events" + params,
       success: function(data) {
         callback(data);
       },
@@ -89,17 +100,14 @@ jQuery.extend(Doxter, {
   },
 
   // Send Google-Data to Doxter
-  sendDataToDoxter: function(data) {
+  sendDataToDoxter: function(data, callback) {
 
     var self = this;
 
-    if(!data.items) {
-      return;
-    }
     data.items.each(function(item) {
       // Skip if start or end isn't given (cancelled events)
       if(!item.start || !item.end) {
-        continue;
+        return;
       }
       console.log("Saving event from Google to Doxter:");
       console.log(item);
@@ -127,6 +135,10 @@ jQuery.extend(Doxter, {
         path: "calendars/" + self.Settings.doxcalId + "/events",
         data: params,
         success: function(data) {
+          // For testing
+          if(callback) {
+            callback();
+          }
           console.log(message);
           if(!params.id) {
             console.log(data);
@@ -140,7 +152,7 @@ jQuery.extend(Doxter, {
 
       // Only save blocking ID, if event wasn't already reschelduled
       if(!params.id) {
-        addBlockingIdToEvent(blockingId, item);
+        self.addBlockingIdToEvent(blockingId, item, callback);
       }
     });
   },
@@ -154,13 +166,13 @@ jQuery.extend(Doxter, {
       // If there is no confirmation_token, the booking was rescheduled
       var confirmationLink = booking.confirmationLink;
       if(!confirmationLink.match(/confirmation_token/)) {
-        continue;
+        return;
       }
 
       console.log("Saving booking from Doxter to Google:");
       console.log(booking);
 
-      notifyUser(
+      self.notifyUser(
         booking.title,
         'Neue Buchung auf ihrem Doxter Account! Klicken sie auf dieses Fenster zum bestätigen!',
         "info48.png",
@@ -203,7 +215,7 @@ jQuery.extend(Doxter, {
   },
 
   // Update Google Calendar entry with Doxter-ID
-  addBlockingIdToEvent: function(blockingId, event_) {
+  addBlockingIdToEvent: function(blockingId, event_, callback) {
 
     var self = this;
 
@@ -227,6 +239,10 @@ jQuery.extend(Doxter, {
       dataType: "json",
       data: JSON.stringify(updateParams),
       success: function(data) {
+        // For testing
+        if(callback) {
+          //callback();
+        }
         console.log("Added blocking ID to event:");
         console.log(data);
       },

@@ -1,6 +1,6 @@
 head.scriptPath = '../scripts';
 
-head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxter', 'helper/settings', 'helper/options', 'sync']), function() {
+head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxter', 'helper/settings', 'helper/options', 'helper/sync']), function() {
 
   describe("Helper functions", function() {
 
@@ -39,17 +39,87 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
     });
   }); // Helper functions
 
+  describe("Google", function() {
+
+    it("should connect to Google", function() {
+      var callback = jasmine.createSpy();
+      runs(function() {
+        Doxter.getDataFromGoogle(callback);
+      });
+
+      waitsFor(function() {
+        return callback.callCount > 0;
+      }, "Callback function should be called", 2000);
+
+      runs(function() {
+        expect(callback).toHaveBeenCalled();
+      });
+    });
+  });
+
+  if(Doxter.Settings.username && Doxter.Settings.password) {
+    describe("Doxter", function() {
+
+      it("should connect to Doxter", function() {
+        var callback = jasmine.createSpy();
+        runs(function() {
+          Doxter.getDataFromDoxter(callback);
+        });
+
+        waitsFor(function() {
+          return callback.callCount > 0;
+        }, "Callback function should be called", 2000);
+
+        runs(function() {
+          expect(callback).toHaveBeenCalled();
+        });
+      });
+
+      it("should post to Doxter and add blocking_id", function() {
+        var callback = jasmine.createSpy();
+        var stub = {
+          items: [
+            {
+              start: { dateTime: 0 },
+              end: { dateTime: 0 }
+            }
+          ]
+        };
+
+        runs(function() {
+          Doxter.sendDataToDoxter(stub, callback);
+        });
+
+        waitsFor(function() {
+          return callback.callCount > 1;
+        }, "Callback function should be called", 2000);
+
+        waitsFor(function() {
+          return callback.callCount > 1;
+        }, "Callback function should be called", 2000);
+
+        runs(function() {
+          expect(callback).toHaveBeenCalled();
+          // 
+          expect(callback.callCount).toBe(2);
+        });
+      }); // it
+    }); // describe
+  } // if
 
   $(function() {
-    var jasmineEnv = jasmine.getEnv();
-    jasmineEnv.updateInterval = 250;
+    Doxter.Google.getAccessToken(function() {
 
-    var htmlReporter = new jasmine.HtmlReporter();
-    jasmineEnv.addReporter(htmlReporter);
-    jasmineEnv.specFilter = function(spec) {
-      return htmlReporter.specFilter(spec);
-    };
-    jasmineEnv.execute();
+      var jasmineEnv = jasmine.getEnv();
+      jasmineEnv.updateInterval = 250;
+
+      var htmlReporter = new jasmine.HtmlReporter();
+      jasmineEnv.addReporter(htmlReporter);
+      jasmineEnv.specFilter = function(spec) {
+        return htmlReporter.specFilter(spec);
+      };
+      jasmineEnv.execute();
+    });
   });
 }); // require
 

@@ -69,7 +69,7 @@ window.Doxter = {
         async: (args.async === undefined ? "true" : args.async),
         data: (args.data ? args.data : ""),
         success: function(data) { args.success(data) },
-        error: function(data) { args.error(data) } 
+        error: function(data) { args.error(data) },
         headers: { "Authorization": "OAuth " + self.accessToken }
       });
     }
@@ -87,7 +87,8 @@ window.Doxter = {
       method: (args.method ? args.method : "get"),
       async: (args.async === undefined ? "true" : args.async),
       data: (args.data ? args.data : ""),
-      headers: {"Authorization": "Basic "+btoa(self.Settings.username+":"+self.Settings.password) }, 
+      username: self.Settings.username,
+      password: self.Settings.password,
       success: function(data) { args.success(data) },
       error: function(data) { args.error(data) } 
     });
