@@ -6,11 +6,11 @@ head.load(head.makePaths(['lib/jquery', 'doxter', 'helper/settings', 'helper/opt
     Doxter.backgroundPage = chrome.extension.getBackgroundPage();
 
     $("#save").click(function() {
-      Doxter.saveSettings(true);
+      Doxter.saveSettings();
       Doxter.notifyUser("doxter Chrome", "Erfolgreich gespeichert!", "success48.png");
-      if(!Doxter.backgroundPage.startedSyncing) {
-        Doxter.backgroundPage.Doxter.start();
-      }
+      //if(!Doxter.backgroundPage.startedSyncing) {
+      // Doxter.backgroundPage.Doxter.start();
+      //}
     });
 
     $("#fetch-doxter-calendars").click(function() {
@@ -23,7 +23,6 @@ head.load(head.makePaths(['lib/jquery', 'doxter', 'helper/settings', 'helper/opt
 
     // Get credentials from local storage
     Doxter.fetchSettings();
-    Doxter.fillInValues();
 
     if(Doxter.Settings.calendarIds) {
       Doxter.insertDropdownForCalendarIds($("#doxcal-id"), Doxter.Settings.calendarIds);
@@ -35,6 +34,8 @@ head.load(head.makePaths(['lib/jquery', 'doxter', 'helper/settings', 'helper/opt
     if(Doxter.Settings.googleCalendarIds) {
       Doxter.insertDropdownForCalendarIds($("#gcal-id"), Doxter.Settings.googleCalendarIds);
     }
+
+    Doxter.fillInValues();
   }); // $(function(){})
 }); // require
 
