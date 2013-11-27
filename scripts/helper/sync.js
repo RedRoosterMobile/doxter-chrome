@@ -34,7 +34,6 @@ jQuery.extend(Doxter, {
 
     this.getDataFromDoxter(function(data) {
       doxterData = data;
-      self.Settings.doxterToGoogle.setting.save(Date.now());
     });
     this.getDataFromGoogle(function(data) {
       googleData = data;
@@ -56,6 +55,8 @@ jQuery.extend(Doxter, {
         "updated": new Date(timestamp).toISOString()
       });
     })();
+
+    self.updateSetting("doxterToGoogle", Date.now());
 
     // Get bookings
     self.connectToDoxter({
@@ -85,6 +86,8 @@ jQuery.extend(Doxter, {
         return "";
       }
     })();
+
+    self.updateSetting("googleToDoxter", Date.now());
 
     // Get events
     self.Google.connect({
@@ -158,7 +161,7 @@ jQuery.extend(Doxter, {
   },
 
   // Send Doxter-Data to Google
-  sendDataToGoogle: function(data) {
+  sendDataToGoogle: function(data, callback) {
 
     var self = this;
 
@@ -197,13 +200,14 @@ jQuery.extend(Doxter, {
       self.Google.connect({
         async: false,
         path: "calendars/" + self.Settings.gcalId + "/events",
-        //headers: {
-        // "Content-Type": "application/json"
-        //},
-        type: "post",
+        method: "post",
         dataType: "json",
         data: JSON.stringify(params),
         success: function(data) {
+          // For testing
+          if(callback) {
+            callback();
+          }
           console.log("Created event:");
           console.log(data);
         },
@@ -219,7 +223,6 @@ jQuery.extend(Doxter, {
 
     var self = this;
 
-    var updateUrl = "https://www.googleapis.com/calendar/v3/calendars/" + self.Settings.gcalId + "/events/"+event_.id;
     var updateParams = {
       "start" : {
         "dateTime": (new Date(event_.start.dateTime)).toISOString()
@@ -231,17 +234,14 @@ jQuery.extend(Doxter, {
     }
 
     self.Google.connect({
-      url: "calendars/" + self.Settings.gcalId + "/events/"+event_.id,
-      //headers: {
-      //  "Content-Type": "application/json"
-      //},
-      type: "put",
+      path: "calendars/" + self.Settings.gcalId + "/events/"+event_.id,
+      method: "put",
       dataType: "json",
       data: JSON.stringify(updateParams),
       success: function(data) {
         // For testing
         if(callback) {
-          //callback();
+          callback();
         }
         console.log("Added blocking ID to event:");
         console.log(data);

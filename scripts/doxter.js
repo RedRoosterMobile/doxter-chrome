@@ -63,6 +63,11 @@ window.Doxter = {
     connect: function(args) {
       var self = this;
 
+      var headers = { "Authorization": "OAuth " + self.accessToken };
+      if(args.method == "put" || args.method == "post") {
+        jQuery.extend(headers, { "content-type": "application/json" });
+      }
+
       $.ajax({
         url: self.API_BASE_URL+"/"+args.path,
         method: (args.method ? args.method : "get"),
@@ -70,7 +75,7 @@ window.Doxter = {
         data: (args.data ? args.data : ""),
         success: function(data) { args.success(data) },
         error: function(data) { args.error(data) },
-        headers: { "Authorization": "OAuth " + self.accessToken }
+        headers: headers
       });
     }
   }, // Google {}

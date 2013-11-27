@@ -26,10 +26,14 @@ head.load(head.makePaths(['lib/jquery', 'doxter', 'helper/settings', 'helper/opt
     Doxter.fillInValues();
 
     if(Doxter.Settings.calendarIds) {
-      Doxter.insertDropdownForCalendarIds();
+      Doxter.insertDropdownForCalendarIds($("#doxcal-id"), Doxter.Settings.calendarIds);
     }
     else {
       $("#doxcal-id").val("placeholder");
+    }
+
+    if(Doxter.Settings.googleCalendarIds) {
+      Doxter.insertDropdownForCalendarIds($("#gcal-id"), Doxter.Settings.googleCalendarIds);
     }
   }); // $(function(){})
 }); // require

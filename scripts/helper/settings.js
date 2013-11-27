@@ -22,25 +22,37 @@ jQuery.extend(Doxter, {
     this.save = function(value) {
       var val = value || $('#'+this.domName).val();
       if(val) {
-        localStorage.setItem(this.localStorageName, $('#'+this.domName).val());
+        this.value = val;
+        this.saveToDisk();
       }
       return this;
+    };
+    this.saveToDisk = function(value) {
+      localStorage.setItem(this.localStorage, this.value);
     };
   },
 
   Settings: {},
   _settings: [],
 
-  fetchSettings: function() {
+  fetchSettings: function(doNotFetchFromDisk) {
+    if(!doNotFetchFromDisk) {
+      this.fetchSettingsFromDisk();
+    }
     var self = this;
     this._settings.each(function(setting) {
-      self.Settings[setting.camelCaseName] = setting.fetch().value;
-      self.Settings[setting.camelCaseName].setting = setting;
+      self.Settings[setting.camelCaseName] = setting.value;
     });
     // Make sure we fetch settings also for bg-page
     if(self.backgroundPage) {
-      self.backgroundPage.Doxter.fetchSettings();
+      self.backgroundPage.Doxter.fetchSettings(doNotFetchFromDisk);
     }
+  },
+
+  fetchSettingsFromDisk: function() {
+    this._settings.each(function(setting) {
+      setting.fetch();
+    });
   },
 
   saveSettings: function() {
@@ -48,6 +60,17 @@ jQuery.extend(Doxter, {
       setting.save();
     });
     this.fetchSettings();
+  },
+
+  updateSetting: function(camelCaseName, value) {
+    var self = this;
+
+    this._settings.each(function(setting) {
+      if(setting.camelCaseName == camelCaseName) {
+        setting.save(value);
+        self.Settings[setting.camelCaseName] = value;
+      }
+    });
   }
 });
 
@@ -70,5 +93,5 @@ Doxter._settings = [
     // Calendar Ids fetched
     new Doxter.Setting("calendar-ids", ""),
     // Calendar Ids fetched
-    new Doxter.Setting("google-calendar-ids", "")
+    new Doxter.Setting("google-calendar-ids", ""),
 ];
