@@ -2,6 +2,8 @@ head.scriptPath = '../scripts';
 
 head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxter', 'helper/settings', 'helper/options', 'helper/sync']), function() {
 
+  Doxter.Test = {};
+
   describe("Helper functions", function() {
 
     it("should convert to camel case", function() {
@@ -26,6 +28,15 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
     it("should contain right value", function() {
       expect(Doxter.Settings[Object.keys(Doxter.Settings)[1]]).toBe(Doxter._settings[1].value);
     });
+
+    it("should update setting", function() {
+      Doxter._settings.push(new Doxter.Setting("foo", "bar"));
+      Doxter.fetchSettings(true);
+
+      expect(Doxter.Settings.foo).toBe("bar");
+      Doxter.updateSetting("foo", "baz");
+      expect(Doxter.Settings.foo).toBe("baz");
+    });
   }); // Helper functions
 
   describe("Option-Page Helpers", function() {
@@ -37,6 +48,40 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
       expect($("#password").val()).toBe(Doxter.Settings.password);
       expect($("#base-url").val()).toBe(Doxter.Settings.baseUrl);
     });
+
+    it("should fetch Google calendar ids", function() {
+      var callback = jasmine.createSpy();
+
+      runs(function() {
+        Doxter.fetchGoogleCalendars(callback);
+      });
+
+      waitsFor(function() {
+        return callback.callCount > 0;
+      });
+
+      runs(function() {
+        expect(callback).toHaveBeenCalled();
+      });
+    });
+
+    if(Doxter.Settings.username && Doxter.Settings.password) {
+      it("should fetch Doxter calendar ids", function() {
+        var callback = jasmine.createSpy();
+
+        runs(function() {
+          Doxter.fetchDoxterCalendars(callback);
+        });
+
+        waitsFor(function() {
+          return callback.callCount > 0;
+        });
+
+        runs(function() {
+          expect(callback).toHaveBeenCalled();
+        });
+      });
+    }
   }); // Helper functions
 
   describe("Google", function() {
@@ -44,7 +89,35 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
     it("should connect to Google", function() {
       var callback = jasmine.createSpy();
       runs(function() {
-        Doxter.getDataFromGoogle(callback);
+        Doxter.getDataFromGoogle(function(data) {
+          callback();
+          Doxter.Test.googleData = data;
+        });
+      });
+
+      waitsFor(function() {
+        return callback.callCount > 0;
+      }, "Callback function should be called", 2000);
+
+      runs(function() {
+        expect(callback).toHaveBeenCalled();
+      });
+    });
+
+    it("should post to Google", function() {
+      var callback = jasmine.createSpy();
+
+      var stub = [{
+        starts: 0,
+        ends: 0,
+        title: "Ein doxter Patient",
+        reason: "HIV",
+        id: "asdfasdf",
+        confirmationLink: "http://ein.link.de?confirmation_token=adjfkdsjf"
+      }];
+
+      runs(function() {
+        Doxter.sendDataToGoogle(stub, callback);
       });
 
       waitsFor(function() {
@@ -63,7 +136,10 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
       it("should connect to Doxter", function() {
         var callback = jasmine.createSpy();
         runs(function() {
-          Doxter.getDataFromDoxter(callback);
+          Doxter.getDataFromDoxter(function(data) {
+            callback();
+            Doxter.Test.doxterData = data;
+          });
         });
 
         waitsFor(function() {
@@ -75,33 +151,23 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
         });
       });
 
-      it("should post to Doxter and add blocking_id", function() {
+      it("should post to Doxter", function() {
         var callback = jasmine.createSpy();
-        var stub = {
-          items: [
-            {
-              start: { dateTime: 0 },
-              end: { dateTime: 0 }
-            }
-          ]
-        };
+        Doxter.Settings.gcalId = "primary";
+
+        // Shrink googleData to 1 item
+        Doxter.Test.googleData.items = [Doxter.Test.googleData.items[0]];
 
         runs(function() {
-          Doxter.sendDataToDoxter(stub, callback);
+          Doxter.sendDataToDoxter(Doxter.Test.googleData, callback);
         });
 
         waitsFor(function() {
-          return callback.callCount > 1;
-        }, "Callback function should be called", 2000);
-
-        waitsFor(function() {
-          return callback.callCount > 1;
-        }, "Callback function should be called", 2000);
+          return callback.callCount > 0;
+        }, "Callback function should be called in sendDataToDoxter", 2000);
 
         runs(function() {
           expect(callback).toHaveBeenCalled();
-          // 
-          expect(callback.callCount).toBe(2);
         });
       }); // it
     }); // describe
