@@ -28,7 +28,7 @@ jQuery.extend(Doxter, {
       return this;
     };
     this.saveToDisk = function(value) {
-      localStorage.setItem(this.localStorage, this.value);
+      localStorage.setItem(this.localStorageName, this.value);
     };
   },
 

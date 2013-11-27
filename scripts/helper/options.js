@@ -70,7 +70,7 @@ jQuery.extend(Doxter, {
       message += "Server meldet: falsche URL";
     }
 
-    self.notifyUser("doxter Chrome", message, "error48.png"); 
+    this.notifyUser("doxter Chrome", message, "error48.png"); 
   },
 
   insertDropdownForCalendarIds: function($el, ids) {
