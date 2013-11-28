@@ -19,7 +19,13 @@
     <title>Erfolreich authentifiziert</title>
     <script src="oauth2.js"></script>
     <script src="oauth2_finish.js"></script>
+    <script>
+      window.setTimeout(function() {
+        chrome.tabs.remove(chrome.tabs.getCurrent().id);
+      }, 4000);
+    </script>
   </head>
   <body>
-    <span style="font-size:75%; text-align:center;">Sie haben Google Calendar erfolgreich authentifiziert. Sie k&ouml;nnen diesen Tab jetzt schlie&szlig;en.</span>
+    <span style="font-size:75%; text-align:center;">Sie haben Google Calendar erfolgreich authentifiziert. Dieser Tab schlie&szlig;t automatisch.</span>
+  </body>
 </html>

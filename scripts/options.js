@@ -8,9 +8,9 @@ head.load(head.makePaths(['lib/jquery', 'doxter', 'helper/settings', 'helper/opt
     $("#save").click(function() {
       Doxter.saveSettings();
       Doxter.notifyUser("doxter Chrome", "Erfolgreich gespeichert!", "success48.png");
-      //if(!Doxter.backgroundPage.startedSyncing) {
-      // Doxter.backgroundPage.Doxter.start();
-      //}
+      if(!Doxter.backgroundPage.startedSyncing) {
+        Doxter.backgroundPage.Doxter.start();
+      }
     });
 
     $("#fetch-doxter-calendars").click(function() {

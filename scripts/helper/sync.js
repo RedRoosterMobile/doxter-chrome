@@ -7,12 +7,18 @@ Doxter = window.Doxter || {};
 jQuery.extend(Doxter, {
 
   readyToSync: function() {
-    return this.Settings.gcalId && this.Settings.doxcalId && 
+    return this.Settings.gcalId && this.Settings.doxcalId && this.Settings.username && this.Settings.password;
+  },
 
   // Start syncing process, check everything
   start: function() {
-    if(this.Settings.baseUrl && this.Settings.username && this.Settings.password && this.Settings.doxcalId) {
-      this.getAccessToken(this.start_);
+    var self = this;
+
+    if(this.readyToSync()) {
+      this.Google.getAccessToken(function() {
+        self.notifyUser("doxter Chrome", "Sync gestartet!", "info48.png");
+        self.start_();
+      });
     }
     else {
       this.notifyUser("doxter Chrome", "Bitte geben sie auf der Optionsseite ihre Daten ein!", "info48.png");
@@ -22,16 +28,18 @@ jQuery.extend(Doxter, {
 
   // Actually starts the process, internal function
   start_: function() {
+    var self = this;
+
     window.setInterval(function() {
-      getAccessToken(function() {
-        sync();
+      // refresh token from time to time
+      self.Google.getAccessToken(function() {
+        self.sync();
       });
     }, Doxter.Settings.syncEvery * 1000);
 
     this.startedSyncing = true;
   },
 
-  // Well, what will this function do?
   sync: function() {
     var doxterData;
     var googleData;
@@ -41,7 +49,6 @@ jQuery.extend(Doxter, {
     });
     this.getDataFromGoogle(function(data) {
       googleData = data;
-      self.Settings.googleTo.googleToDoxter.setting.save(Date.now());
     });
 
     this.sendDataToDoxter(googleData);
@@ -50,6 +57,8 @@ jQuery.extend(Doxter, {
 
   // Receive bookings from Doxter
   getDataFromDoxter: function(callback) {
+
+    console.log("Getting data from Doxter now");
 
     var self = this;
 
@@ -77,6 +86,8 @@ jQuery.extend(Doxter, {
 
   // Receive events from Google
   getDataFromGoogle: function(callback) {
+
+    console.log("Getting data from Google now");
 
     var self = this;
 
@@ -108,6 +119,8 @@ jQuery.extend(Doxter, {
 
   // Send Google-Data to Doxter
   sendDataToDoxter: function(data, callback) {
+
+    console.log("Sending data to Doxter now");
 
     var self = this;
 
@@ -166,6 +179,8 @@ jQuery.extend(Doxter, {
 
   // Send Doxter-Data to Google
   sendDataToGoogle: function(data, callback) {
+
+    console.log("Sending data to Google now");
 
     var self = this;
 

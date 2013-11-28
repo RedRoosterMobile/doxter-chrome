@@ -76,7 +76,7 @@ jQuery.extend(Doxter, {
 
 Doxter._settings = [
     // Base URL of API, eg: http://www.doxter.de/api/v1
-    new Doxter.Setting("base-url", "http://www.doxter.de/api/v1"),
+    new Doxter.Setting("base-url", "https://www.doxter.de/api/v1"),
     // Doxter username of user managing calendar
     new Doxter.Setting("username", ""),
     // Doxter password of user managing calendar

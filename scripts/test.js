@@ -192,6 +192,46 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
         });
       }); // it
     }); // describe
+
+    if(Doxter.readyToSync()) {
+      describe("Plugin functionality", function() {
+        it("should start syncing", function() {
+          var callback = jasmine.createSpy();
+          spyOn(Doxter, "getDataFromDoxter");
+          spyOn(Doxter, "getDataFromGoogle");
+
+          spyOn(Doxter, "sendDataToDoxter");
+          spyOn(Doxter, "sendDataToGoogle");
+
+          runs(function() {
+            Doxter.start();
+          });
+
+          waitsFor(function() {
+            return Doxter.getDataFromDoxter.callCount > 0;
+          }, "getDataFromDoxter should be called", 2000);
+
+          waitsFor(function() {
+            return Doxter.getDataFromGoogle.callCount > 0;
+          }, "getDataFromGoogle should be called", 2000);
+
+          waitsFor(function() {
+            return Doxter.sendDataToDoxter.callCount > 0;
+          }, "sendDataToDoxter should be called", 2000);
+
+          waitsFor(function() {
+            return Doxter.sendDataToGoogle.callCount > 0;
+          }, "sendDataToDoxter should be called", 2000);
+
+          runs(function() {
+            expect(Doxter.getDataFromDoxter).toHaveBeenCalled();
+            expect(Doxter.getDataFromGoogle).toHaveBeenCalled();
+            expect(Doxter.sendDataToDoxter).toHaveBeenCalled();
+            expect(Doxter.sendDataToGoogle).toHaveBeenCalled();
+          });
+        });
+      })
+    } // if
   } // if
 
   $(function() {
