@@ -26,21 +26,31 @@ jQuery.extend(Doxter, {
     }
   },
 
+  // Stop syncing process
+  stop: function() {
+    if(this.syncIntervalId) {
+      window.clearInterval(this.syncIntervalId);
+    }
+  },
+
   // Actually starts the process, internal function
   start_: function() {
     var self = this;
 
-    window.setInterval(function() {
+    this.stop();
+
+    this.syncIntervalId = window.setInterval(function() {
       // refresh token from time to time
       self.Google.getAccessToken(function() {
         self.sync();
       });
     }, Doxter.Settings.syncEvery * 1000);
-
-    this.startedSyncing = true;
   },
 
   sync: function() {
+
+    this.startedSyncing = true;
+
     var doxterData;
     var googleData;
 
@@ -186,7 +196,7 @@ jQuery.extend(Doxter, {
 
     data.each(function(booking) {
       // If there is no confirmation_token, the booking was rescheduled
-      var confirmationLink = booking.confirmationLink;
+      var confirmationLink = booking.confirmation_link;
       if(!confirmationLink.match(/confirmation_token/)) {
         return;
       }
