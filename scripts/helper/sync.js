@@ -5,6 +5,10 @@
 Doxter = window.Doxter || {};
 
 jQuery.extend(Doxter, {
+
+  readyToSync: function() {
+    return this.Settings.gcalId && this.Settings.doxcalId && 
+
   // Start syncing process, check everything
   start: function() {
     if(this.Settings.baseUrl && this.Settings.username && this.Settings.password && this.Settings.doxcalId) {
