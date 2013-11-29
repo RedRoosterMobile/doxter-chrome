@@ -16,7 +16,7 @@ jQuery.extend(Doxter, {
 
     if(this.readyToSync()) {
       this.Google.getAccessToken(function() {
-        self.notifyUser("doxter Chrome", "Sync gestartet!", "info48.png");
+        self.notifyUser("doxter Chrome", "Sync gestartet!", "doxter-icon-48.png");
         self.start_();
       });
     }
@@ -75,14 +75,13 @@ jQuery.extend(Doxter, {
       });
     })();
 
-    self.updateSetting("doxterToGoogle", Date.now());
-
     // Get bookings
     self.connectToDoxter({
       async: false,
       path: "calendars/" + self.Settings.doxcalId + "/events" + params,
       success: function(data) {
         callback(data);
+        self.updateSetting("googleToDoxter", self.getLargest(data, "updated_at"));
       },
       error: function(data) {
         self.notifyUser("doxter Chrome", "Es konnte keine Verbindung zur doxter API aufgebaut werden!", "error48.png");
@@ -108,14 +107,13 @@ jQuery.extend(Doxter, {
       }
     })();
 
-    self.updateSetting("googleToDoxter", Date.now());
-
     // Get events
     self.Google.connect({
       async: false,
       path: "calendars/" + self.Settings.gcalId + "/events" + params,
       success: function(data) {
         callback(data);
+        self.updateSetting("googleToDoxter", self.getLargest(data.items, "updated_at"));
       },
       error: function(data) {
         console.log(data);
@@ -135,8 +133,6 @@ jQuery.extend(Doxter, {
       if(!item.start || !item.end) {
         return;
       }
-      console.log("Saving event from Google to Doxter:");
-      console.log(item);
 
       var message = "Created blocking:";
       var params = {
@@ -145,12 +141,17 @@ jQuery.extend(Doxter, {
       }
       // If id is found in description, reschedule
       if(item.description) {
-        match = item.description.match(/DXID:(.*)$/);
+        //match = item.description.match(/DXID:(.*)$/);
+        match = item.description.match(/DXID/);
         if(match) {
-          params.id = match[1];
-          message = "Rescheduled Doxter event with ID: " + params.id;
+          return;
+          //params.id = match[1];
+          //message = "Rescheduled Doxter event with ID: " + params.id;
         }
       }
+
+      console.log("Saving event from Google to Doxter:");
+      console.log(item);
 
       var blockingId = undefined;
 
@@ -202,10 +203,10 @@ jQuery.extend(Doxter, {
 
       self.notifyUser(
         booking.title,
-        'Neue Buchung auf ihrem Doxter Account! Klicken sie auf dieses Fenster zum bestätigen!',
+        'Neue Buchung auf ihrem Doxter Account! Klicken sie auf dieses Fenster zum bestaetigen!',
         "info48.png",
         function() {
-          chrome.tabs.create({url: "http://www.doxter.de"+confirmationLink});
+          chrome.tabs.create({url: confirmationLink});
         }
       );
 

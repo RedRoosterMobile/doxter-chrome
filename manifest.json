@@ -25,7 +25,8 @@
   "web_accessible_resources": [
     "img/success48.png",
     "img/error48.png",
-    "img/info48.png"
+    "img/info48.png",
+    "img/doxter-icon-48.png"
   ],
 
   "options_page": "options/options.html",

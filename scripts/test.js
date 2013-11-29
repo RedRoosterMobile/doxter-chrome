@@ -1,3 +1,7 @@
+//////////
+// Tests
+/////////
+
 head.scriptPath = '../scripts';
 
 head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxter', 'helper/settings', 'helper/options', 'helper/sync']), function() {
@@ -14,6 +18,17 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
     it("should stringify object", function() {
       expect(Doxter.stringify({your: "mum"})).toBe("your=mum");
       expect(Doxter.stringify({an: "other", test: "case"})).toBe("an=other&test=case");
+    });
+
+    it("should give largest number", function() {
+      var testObj = [{foo: 42}, {foo: 1337}, {foo: 555}];
+
+      expect(Doxter.getLargest(undefined, "foo")).toBe(undefined);
+      expect(Doxter.getLargest(testObj, "foo")).toBe(1337);
+    });
+
+    it("should give days", function() {
+      expect(Doxter.days(2)).toBe(172800000);
     });
   }); // Helper functions
 
@@ -189,24 +204,12 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
       describe("Plugin functionality", function() {
         it("should start syncing", function() {
 
-          var callback = jasmine.createSpy();
-          spyOn(Doxter, "getDataFromDoxter");
-          spyOn(Doxter, "getDataFromGoogle");
-
           spyOn(Doxter, "sendDataToDoxter");
           spyOn(Doxter, "sendDataToGoogle");
 
           runs(function() {
             Doxter.start();
           });
-
-          waitsFor(function() {
-            return Doxter.getDataFromDoxter.callCount > 0;
-          }, "getDataFromDoxter should be called", 2000);
-
-          waitsFor(function() {
-            return Doxter.getDataFromGoogle.callCount > 0;
-          }, "getDataFromGoogle should be called", 2000);
 
           waitsFor(function() {
             return Doxter.sendDataToDoxter.callCount > 0;
@@ -217,8 +220,6 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
           }, "sendDataToGoogle should be called", 2000);
 
           runs(function() {
-            expect(Doxter.getDataFromDoxter).toHaveBeenCalled();
-            expect(Doxter.getDataFromGoogle).toHaveBeenCalled();
             expect(Doxter.sendDataToDoxter).toHaveBeenCalled();
             expect(Doxter.sendDataToGoogle).toHaveBeenCalled();
           });

@@ -1,3 +1,7 @@
+/////////////
+// Options
+////////////
+
 head.scriptPath = '../scripts';
 
 head.load(head.makePaths(['lib/jquery', 'doxter', 'helper/settings', 'helper/options']), function() {

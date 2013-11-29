@@ -117,6 +117,24 @@ window.Doxter = {
     return params.join('&');
   },
 
+  getLargest: function(array, attribute) {
+    if(!array) {
+      return undefined;
+    }
+    var largest = 0;
+    array.each(function(item) {
+      largest = (item[attribute] > largest ? item[attribute] : largest);
+    });
+    return largest;
+  },
+
+  days: function(val) {
+    return val * 1000 // seconds
+               * 60   // minutes
+               * 60   // hours
+               * 24;  // days
+  },
+
   notifyUser: function(title, text, image_, callback) {
     var image = chrome.extension.getURL("img/"+image_);
     var notification = webkitNotifications.createNotification(image, title, text);
