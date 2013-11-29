@@ -120,7 +120,7 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
         title: "Ein doxter Patient",
         reason: "HIV",
         id: "asdfasdf",
-        confirmationLink: "http://ein.link.de?confirmation_token=adjfkdsjf"
+        confirmation_link: "http://ein.link.de?confirmation_token=adjfkdsjf"
       }];
 
       runs(function() {
@@ -165,13 +165,10 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
         // Shrink googleData to 1 item
         Doxter.Test.googleData.items = [Doxter.Test.googleData.items[0]];
         var stub = {"items":[{
-          "id":"p98kmmmqp851edbvnv48a8bmbg",
-          "status":"confirmed",
           "summary":"fdkajslkdfj",
           "start":{"dateTime":"2013-11-16T06:00:00+01:00"},
           "end":{"dateTime":"2013-11-16T09:00:00+01:00"},
           "sequence":0,
-          "reminders":{"useDefault":true}
         }]};
 
         runs(function() {
@@ -182,13 +179,8 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
           return callback.callCount > 0;
         }, "Callback function should be called in sendDataToDoxter", 2000);
 
-        waitsFor(function() {
-          return callback.callCount > 1;
-        }, "Callback function should be called in sendDataToDoxter", 2000);
-
         runs(function() {
           expect(callback).toHaveBeenCalled();
-          expect(callback.callCount).toBe(2);
         });
       }); // it
     }); // describe
@@ -196,6 +188,7 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
     if(Doxter.readyToSync()) {
       describe("Plugin functionality", function() {
         it("should start syncing", function() {
+
           var callback = jasmine.createSpy();
           spyOn(Doxter, "getDataFromDoxter");
           spyOn(Doxter, "getDataFromGoogle");
@@ -221,7 +214,7 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
 
           waitsFor(function() {
             return Doxter.sendDataToGoogle.callCount > 0;
-          }, "sendDataToDoxter should be called", 2000);
+          }, "sendDataToGoogle should be called", 2000);
 
           runs(function() {
             expect(Doxter.getDataFromDoxter).toHaveBeenCalled();

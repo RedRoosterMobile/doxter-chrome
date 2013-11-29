@@ -38,6 +38,7 @@ jQuery.extend(Doxter, {
     var self = this;
 
     this.stop();
+    this.sync();
 
     this.syncIntervalId = window.setInterval(function() {
       // refresh token from time to time
@@ -48,21 +49,16 @@ jQuery.extend(Doxter, {
   },
 
   sync: function() {
+    var self = this;
 
-    this.startedSyncing = true;
-
-    var doxterData;
-    var googleData;
-
-    this.getDataFromDoxter(function(data) {
-      doxterData = data;
+    // NOTE: Order is important here, because we dont
+    // want to sync back events which we just fetched
+    self.getDataFromDoxter(function(doxterData) {
+      self.getDataFromGoogle(function(googleData) {
+        self.sendDataToGoogle(doxterData);
+        self.sendDataToDoxter(googleData);
+      });
     });
-    this.getDataFromGoogle(function(data) {
-      googleData = data;
-    });
-
-    this.sendDataToDoxter(googleData);
-    this.sendDataToGoogle(doxterData);
   },
 
   // Receive bookings from Doxter
@@ -181,8 +177,8 @@ jQuery.extend(Doxter, {
       });
 
       // Only save blocking ID, if event wasn't already reschelduled
-      if(!params.id) {
-        self.addBlockingIdToEvent(blockingId, item, callback);
+      if(!params.id && !callback) {
+        self.addBlockingIdToEvent(blockingId, item);
       }
     });
   },
@@ -248,7 +244,8 @@ jQuery.extend(Doxter, {
   },
 
   // Update Google Calendar entry with Doxter-ID
-  addBlockingIdToEvent: function(blockingId, event_, callback) {
+  // Not tested, because it needs real Google Event ID
+  addBlockingIdToEvent: function(blockingId, event_) {
 
     var self = this;
 
@@ -268,10 +265,6 @@ jQuery.extend(Doxter, {
       dataType: "json",
       data: JSON.stringify(updateParams),
       success: function(data) {
-        // For testing
-        if(callback) {
-          callback();
-        }
         console.log("Added blocking ID to event:");
         console.log(data);
       },
