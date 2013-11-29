@@ -117,13 +117,13 @@ window.Doxter = {
     return params.join('&');
   },
 
-  getLargest: function(array, attribute) {
+  getLargestDate: function(array, attribute) {
     if(!array) {
       return undefined;
     }
     var largest = 0;
     array.each(function(item) {
-      largest = (item[attribute] > largest ? item[attribute] : largest);
+      largest = (Date.parse(item[attribute]) > largest ? item[attribute] : largest);
     });
     return largest;
   },

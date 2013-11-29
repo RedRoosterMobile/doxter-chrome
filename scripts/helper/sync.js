@@ -113,7 +113,7 @@ jQuery.extend(Doxter, {
       path: "calendars/" + self.Settings.gcalId + "/events" + params,
       success: function(data) {
         callback(data);
-        self.updateSetting("googleToDoxter", self.getLargest(data.items, "updated_at"));
+        self.updateSetting("googleToDoxter", self.getLargest(data.items, "updated"));
       },
       error: function(data) {
         console.log(data);
