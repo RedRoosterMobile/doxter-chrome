@@ -161,6 +161,7 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
           Doxter.getDataFromDoxter(function(data) {
             callback();
             Doxter.Test.doxterData = data;
+            Doxter.Test.oldDoxterToGoogle = Doxter.Settings.doxterToGoogle;
           });
         });
 
@@ -169,6 +170,12 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
         }, "Callback function should be called", 2000);
 
         runs(function() {
+          if(Doxter.Test.doxterData.length) {
+            expect(Doxter.Settings.doxterToGoogle).not.toBe(Doxter.Test.oldDoxterToGoogle);
+          }
+          else {
+            expect(Doxter.Settings.doxterToGoogle).toBe(Doxter.Test.oldDoxterToGoogle);
+          }
           expect(callback).toHaveBeenCalled();
         });
       });
@@ -177,8 +184,6 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
         var callback = jasmine.createSpy();
         Doxter.Settings.gcalId = "primary";
 
-        // Shrink googleData to 1 item
-        Doxter.Test.googleData.items = [Doxter.Test.googleData.items[0]];
         var stub = {"items":[{
           "summary":"fdkajslkdfj",
           "start":{"dateTime":"2013-11-16T06:00:00+01:00"},

@@ -81,7 +81,14 @@ jQuery.extend(Doxter, {
       path: "calendars/" + self.Settings.doxcalId + "/events" + params,
       success: function(data) {
         callback(data);
-        self.updateSetting("doxterToGoogle", self.getLargestDate(data, "updated_at") + 1000);
+        // NOTE: Although this looks kinda unnecessary
+        // undefined + 1000 = NaN
+        // & !!NaN = true
+        // WTF JAVASCRIPT
+        var largestDate = self.getLargestDate(data, "updated_at");
+        if(largestDate) {
+          self.updateSetting("doxterToGoogle", largestDate + 1000);
+        }
       },
       error: function(data) {
         self.notifyUser("doxter Chrome", "Es konnte keine Verbindung zur doxter API aufgebaut werden!", "error48.png");

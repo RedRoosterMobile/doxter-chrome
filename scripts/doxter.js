@@ -118,7 +118,7 @@ window.Doxter = {
   },
 
   getLargestDate: function(array, attribute) {
-    if(!array) {
+    if(!array || !array.length) {
       return undefined;
     }
     var largest = 0;

@@ -88,8 +88,8 @@ Doxter._settings = [
     // ID of Doxter Calendar
     new Doxter.Setting("doxcal-id", ""),
     // Last synced
-    new Doxter.Setting("doxter-to-google", Date.now() - Doxter.days(20)),
-    new Doxter.Setting("google-to-doxter", Date.now() - Doxter.days(20)),
+    new Doxter.Setting("doxter-to-google", Date.now() - Doxter.days(4)),
+    new Doxter.Setting("google-to-doxter", Date.now() - Doxter.days(4)),
     // Calendar Ids fetched
     new Doxter.Setting("calendar-ids", ""),
     // Calendar Ids fetched
