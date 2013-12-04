@@ -46,6 +46,13 @@ window.Doxter = {
           client_secret: "G4wqWbYxp1hegfw7CL1z5ik0",
           api_scope: "https://www.googleapis.com/auth/calendar"
         });
+
+        // Weird fix
+        self.auth.setSource({
+          clientId: "329184275271.apps.googleusercontent.com",
+          clientSecret: "G4wqWbYxp1hegfw7CL1z5ik0",
+          apiScope: "https://www.googleapis.com/auth/calendar"
+        });
       }
 
       if(self.auth.hasAccessToken() && !self.auth.isAccessTokenExpired()) {
