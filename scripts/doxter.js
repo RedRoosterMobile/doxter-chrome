@@ -123,7 +123,8 @@ window.Doxter = {
     }
     var largest = 0;
     array.each(function(item) {
-      largest = (Date.parse(item[attribute]) > largest ? item[attribute] : largest);
+      var ts = Date.parse(item[attribute]);
+      largest = (ts > largest ? ts : largest);
     });
     return largest;
   },

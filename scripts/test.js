@@ -20,11 +20,11 @@ head.load(head.makePaths(['lib/jquery', 'lib/jasmine', 'lib/jasmine-html', 'doxt
       expect(Doxter.stringify({an: "other", test: "case"})).toBe("an=other&test=case");
     });
 
-    it("should give largest number", function() {
-      var testObj = [{foo: 42}, {foo: 1337}, {foo: 555}];
+    it("should give largest date", function() {
+      var testObj = [{foo: "2013-06-12T08:45:00+02:00"}, {foo: "2012-06-12T08:45:00+02:00"}, {foo: "2014-06-12T08:45:00+02:00"}];
 
-      expect(Doxter.getLargest(undefined, "foo")).toBe(undefined);
-      expect(Doxter.getLargest(testObj, "foo")).toBe(1337);
+      expect(Doxter.getLargestDate(undefined, "foo")).toBe(undefined);
+      expect(Doxter.getLargestDate(testObj, "foo")).toBe(Date.parse("2014-06-12T08:45:00+02:00"));
     });
 
     it("should give days", function() {
