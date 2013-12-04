@@ -201,7 +201,7 @@ jQuery.extend(Doxter, {
     data.each(function(booking) {
       // If there is no confirmation_token, the booking was rescheduled
       var confirmationLink = booking.confirmation_link;
-      if(!confirmationLink.match(/confirmation_token/)) {
+      if(confirmationLink && !confirmationLink.match(/confirmation_token/)) {
         return;
       }
 
