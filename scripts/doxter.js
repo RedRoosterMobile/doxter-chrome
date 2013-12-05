@@ -137,7 +137,7 @@ window.Doxter = {
       var ts = Date.parse(item[attribute]);
       largest = (ts > largest ? ts : largest);
     });
-    return largest;
+    return Math.max(largest, Date.now()-Doxter.days(7));
   },
 
   days: function(val) {
