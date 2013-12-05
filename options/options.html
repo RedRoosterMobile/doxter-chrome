@@ -23,14 +23,18 @@
       </ol>
       <h4>Schritt 2</h4>
       <ol>
-        <li>"Doxter-Kalender"-Button klicken</li>
+        <li>"Fetch Doxter-Calendars"-Button klicken</li>
         <li>Doxter-Kalender ausw&auml;hlen</li>
-        <li>"Google-Kalender"-Button klicken</li>
-        <li>Google-Kalender ausw&auml;hlen</li>
       </ol>
       <h4>Schritt 3</h4>
       <ol>
-        <li>"Speichern"-Button klicken</li>
+        <li>"Fetch Doxter-Calendars"-Button klicken</li>
+        <li>Google Authentifizierung durchf&uuml;hren</li>
+        <li>Google-Kalender ausw&auml;hlen</li>
+      </ol>
+      <h4>Schritt 4</h4>
+      <ol>
+        <li>"Start"-Button klicken</li>
         <li>Happy Syncing!</li>
       </ol>
     </p>
@@ -43,7 +47,7 @@
 
     <div class="form-inner">
       <fieldset>
-        <legend>Doxter:</legend>
+        <legend>Schritt 1:</legend>
 
         <label class="dev" for="base-url">API Basis-URL:</label>
         <input class="form-control dev autosave" type="text" id="base-url" />
@@ -54,34 +58,47 @@
         <label for="password">Passwort:</label>
         <input class="form-control autosave" type="password" id="password" />
 
+      </fieldset>
+    </div>
+
+    <div class="form-inner">
+      <fieldset>
+        <legend>Schritt 2:</legend>
+
+        <button class="btn btn-large btn-warning" id="fetch-doxter-calendars">Fetch Doxter-Calendars</button>
+
         <label for="doxcal-id">Doxter Kalender:</label>
         <select class="form-control" name="doxcal-id" id="doxcal-id">
           <option value="placeholder">Daten eingeben und "Doxter Kalender" dr&uuml;cken!</option>
         </select>
-
-        <button class="btn btn-large btn-warning" id="fetch-doxter-calendars">Doxter-Kalender</button>
 
       </fieldset>
     </div>
 
     <div class="form-inner">
       <fieldset>
-        <legend>Google:</legend>
+        <legend>Schritt 3:</legend>
+
+        <button class="btn btn-large btn-primary" id="fetch-google-calendars">Fetch Google-Calendars</button>
 
         <label for="gcal-id">Google Kalender-ID:</label>
         <select class="form-control" name="gcal-id" id="gcal-id">
           <option value="primary">Primary Calendar</option>
         </select>
 
-        <button class="btn btn-large btn-primary" id="fetch-google-calendars">Google-Kalender</button>
+      </fieldset>
+    </div>
 
+    <div class="form-inner">
+      <fieldset>
+        <legend>Schritt 4:</legend>
+        <button class="btn btn-large btn-success" id="start">START</button>
       </fieldset>
     </div>
 
     <hr />
 
     <div class="form-inner">
-      <button class="btn btn-success" id="save">Speichern</button>
     </div>
 
     <footer>

@@ -9,7 +9,7 @@ head.load(head.makePaths(['lib/jquery', 'doxter', 'helper/settings', 'helper/opt
     Doxter = window.Doxter;
     Doxter.backgroundPage = chrome.extension.getBackgroundPage();
 
-    $("#save").click(function() {
+    $("#start").click(function() {
       Doxter.saveSettings();
       Doxter.notifyUser("doxter Chrome", "Erfolgreich gespeichert!", "success48.png");
       Doxter.backgroundPage.Doxter.start();
