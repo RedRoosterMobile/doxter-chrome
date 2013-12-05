@@ -50,11 +50,13 @@ window.Doxter = {
         });
 
         // Weird fix
-        self.auth.setSource({
-          clientId: "329184275271.apps.googleusercontent.com",
-          clientSecret: "G4wqWbYxp1hegfw7CL1z5ik0",
-          apiScope: "https://www.googleapis.com/auth/calendar"
-        });
+        if($.isEmptyObject(self.auth.get())) {
+          self.auth.setSource({
+            clientId: "329184275271.apps.googleusercontent.com",
+            clientSecret: "G4wqWbYxp1hegfw7CL1z5ik0",
+            apiScope: "https://www.googleapis.com/auth/calendar"
+          });
+        }
       }
 
       if(self.auth.hasAccessToken() && !self.auth.isAccessTokenExpired()) {
