@@ -14,6 +14,8 @@ jQuery.extend(Doxter, {
   start: function() {
     var self = this;
 
+    this.stop();
+
     if(this.readyToSync()) {
       this.Google.getAccessToken(function() {
         self.notifyUser("doxter Chrome", "Sync gestartet!", "doxter-icon-48.png");
@@ -251,21 +253,13 @@ jQuery.extend(Doxter, {
 
     var self = this;
 
-    var updateParams = {
-      "start" : {
-        "dateTime": (new Date(event_.start.dateTime)).toISOString()
-      },
-      "end" : {
-        "dateTime": (new Date(event_.end.dateTime)).toISOString()
-      },
-      "description": (event_.description ? event_.description+"\n\n" : "") + "DXID:"+blockingId
-    }
+    event_.description = (event_.description ? event_.description+"\n\n" : "") + "DXID:"+blockingId;
 
     self.Google.connect({
       path: "calendars/" + self.Settings.gcalId + "/events/"+event_.id,
       method: "put",
       dataType: "json",
-      data: JSON.stringify(updateParams),
+      data: JSON.stringify(event_),
       success: function(data) {
         console.log("Added blocking ID to event:");
         console.log(data);
