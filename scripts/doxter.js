@@ -28,6 +28,8 @@ Array.prototype.eachWithIndex = function(callback) {
 ////////////
 window.Doxter = {
 
+  environment: "production",
+
   //////////////////
   // Google Related
   /////////////////

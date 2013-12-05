@@ -29,9 +29,14 @@ label {
 }
 
 .form-control {
-  max-width: 361px;
+  max-width: 365px;
 }
 
 .form-inner {
   margin-top: 20px;
+}
+
+.btn-large {
+  margin-top: 10px;
+  width: 365px;
 }

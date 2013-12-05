@@ -81,15 +81,13 @@ Doxter._settings = [
     new Doxter.Setting("username", ""),
     // Doxter password of user managing calendar
     new Doxter.Setting("password", ""),
-    // Determines how often plugin should sync
-    new Doxter.Setting("sync-every", "60"),
     // ID of Google Calendar (use 'primary' for standard Calendar)
     new Doxter.Setting("gcal-id", "primary"),
     // ID of Doxter Calendar
     new Doxter.Setting("doxcal-id", ""),
     // Last synced
-    new Doxter.Setting("doxter-to-google", Date.now() - Doxter.days(4)),
-    new Doxter.Setting("google-to-doxter", Date.now() - Doxter.days(4)),
+    new Doxter.Setting("doxter-to-google", Date.now() - Doxter.days(7)),
+    new Doxter.Setting("google-to-doxter", Date.now() - Doxter.days(7)),
     // Calendar Ids fetched
     new Doxter.Setting("calendar-ids", ""),
     // Calendar Ids fetched

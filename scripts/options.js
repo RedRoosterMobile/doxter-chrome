@@ -23,6 +23,20 @@ head.load(head.makePaths(['lib/jquery', 'doxter', 'helper/settings', 'helper/opt
       Doxter.fetchGoogleCalendars(); 
     });
 
+    $("#gcal-id").change(function() {
+      Doxter.updateSetting("googleToDoxter", Date.now() - Doxter.days(7));
+      Doxter.saveSettings();
+    });
+
+    $("#doxcal-id").change(function() {
+      Doxter.updateSetting("doxterToGoogle", Date.now() - Doxter.days(7));
+      Doxter.saveSettings();
+    });
+
+    if(Doxter.environment == "production") {
+      $(".dev").hide();
+    }
+
     // Get credentials from local storage
     Doxter.fetchSettings();
 

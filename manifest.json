@@ -1,6 +1,6 @@
 {
   "name": "doxter Chrome",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "manifest_version": 2,
 
   "description": "Chrome Extension that utilizes the doxter-API and Google Calendar API",

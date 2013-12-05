@@ -43,7 +43,7 @@
 
     <div class="form-inner">
       <fieldset>
-        <legend>Pflichtfelder:</legend>
+        <legend>Doxter:</legend>
 
         <label class="dev" for="base-url">API Basis-URL:</label>
         <input class="form-control dev autosave" type="text" id="base-url" />
@@ -59,27 +59,28 @@
           <option value="placeholder">Daten eingeben und "Doxter Kalender" dr&uuml;cken!</option>
         </select>
 
+        <button class="btn btn-large btn-warning" id="fetch-doxter-calendars">Doxter-Kalender</button>
 
       </fieldset>
     </div>
 
     <div class="form-inner">
       <fieldset>
-        <legend>Optional:</legend>
-
-        <label for="sync-every">Synchronisations Intervall (in sek):</label>
-        <input type="text" class="form-control" name="sync-every" id="sync-every" />
+        <legend>Google:</legend>
 
         <label for="gcal-id">Google Kalender-ID:</label>
         <select class="form-control" name="gcal-id" id="gcal-id">
           <option value="primary">Primary Calendar</option>
         </select>
+
+        <button class="btn btn-large btn-primary" id="fetch-google-calendars">Google-Kalender</button>
+
       </fieldset>
     </div>
 
+    <hr />
+
     <div class="form-inner">
-      <button class="btn btn-warning" id="fetch-doxter-calendars">Doxter-Kalender</button>
-      <button class="btn btn-primary" id="fetch-google-calendars">Google-Kalender</button>
       <button class="btn btn-success" id="save">Speichern</button>
     </div>
 

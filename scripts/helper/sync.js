@@ -17,7 +17,7 @@ jQuery.extend(Doxter, {
     if(this.readyToSync()) {
       this.Google.getAccessToken(function() {
         self.notifyUser("doxter Chrome", "Sync gestartet!", "doxter-icon-48.png");
-        self.start_();
+        self.sync();
       });
     }
     else {
@@ -28,26 +28,12 @@ jQuery.extend(Doxter, {
 
   // Stop syncing process
   stop: function() {
-    if(this.syncIntervalId) {
-      window.clearInterval(this.syncIntervalId);
+    if(this.syncTimeoutId) {
+      this.clearTimeout(this.syncTimeoutId);
     }
   },
 
-  // Actually starts the process, internal function
-  start_: function() {
-    var self = this;
-
-    this.stop();
-    this.sync();
-
-    this.syncIntervalId = window.setInterval(function() {
-      // refresh token from time to time
-      self.Google.getAccessToken(function() {
-        self.sync();
-      });
-    }, Doxter.Settings.syncEvery * 1000);
-  },
-
+  // Starts syncing
   sync: function() {
     var self = this;
 
@@ -57,6 +43,12 @@ jQuery.extend(Doxter, {
       self.getDataFromGoogle(function(googleData) {
         self.sendDataToGoogle(doxterData);
         self.sendDataToDoxter(googleData);
+        this.syncTimeoutId = window.setTimeout(function() {
+          // refresh token from time to time
+          self.Google.getAccessToken(function() {
+            self.sync();
+          });
+        }, Math.floor(Math.random() * (300000 - 60000 + 1)) + 60000);
       });
     });
   },
