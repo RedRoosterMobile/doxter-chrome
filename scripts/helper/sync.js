@@ -83,6 +83,7 @@ jQuery.extend(Doxter, {
         }
       },
       error: function(data) {
+        callback([]);
         self.notifyUser("doxter Chrome", "Es konnte keine Verbindung zur doxter API aufgebaut werden!", "error48.png");
       }
     });
@@ -115,6 +116,7 @@ jQuery.extend(Doxter, {
         self.updateSetting("googleToDoxter", self.getLargestDate(data.items, "updated"));
       },
       error: function(data) {
+        callback({items: []});
         console.log(data);
       }
     });
