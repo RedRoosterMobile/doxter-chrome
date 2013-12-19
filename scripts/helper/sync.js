@@ -105,7 +105,9 @@ jQuery.extend(Doxter, {
         });
       }
       else {
-        return "";
+        return "?" + Doxter.stringify({
+          "timeMin": new Date().toISOString()
+        });
       }
     })();
 
@@ -138,15 +140,17 @@ jQuery.extend(Doxter, {
 
       var message = "Created blocking:";
       var params = {
-        "starts" : (new Date(item.start.dateTime)).toISOString(),
-        "ends" : (new Date(item.end.dateTime)).toISOString()
+        "starts": (new Date(item.start.dateTime)).toISOString(),
+        "ends": (new Date(item.end.dateTime)).toISOString(),
+        "title": "Google Kalender Event: "+item.summary
       }
-      // If id is found in description, reschedule
+      // If id is found in description, skip
       if(item.description) {
         //match = item.description.match(/DXID:(.*)$/);
         match = item.description.match(/DXID/);
         if(match) {
           return;
+          // NOTE: There was once a rescheduling feature here
           //params.id = match[1];
           //message = "Rescheduled Doxter event with ID: " + params.id;
         }

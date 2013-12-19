@@ -1,0 +1,5 @@
+# 2.1.3
+
+* Adds Changelog
+* It now requests all future events from Google, if first request
+* It now pushes events' summary to Doxter
