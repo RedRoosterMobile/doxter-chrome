@@ -146,19 +146,20 @@ window.Doxter = {
                * 60   // hours
                * 24;  // days
   },
-
+  //https://developer.chrome.com/extensions/notifications
   notifyUser: function(title, text, image_, callback) {
     var image = chrome.extension.getURL("img/"+image_);
-    var notification = webkitNotifications.createNotification(image, title, text);
-    notification.onclick = function() {
-      if(callback) {
-        callback();
-      }
-      notification.close();
-    };
-    notification.show();
-    window.setTimeout(function() {
-      notification.close();
-    }, 4000);
+    // has to be unique identifier
+    var id = title+text;
+    var options = {
+        type: "basic",
+        title: title,
+        message: text,
+        iconUrl: image
+    }
+    //WTF documentation is kinda weird regarding this callback, but it's mandatory. 
+    var creationCallback = function(notificationId){return notificationId};
+    chrome.notifications.create(id, options,creationCallback);
+    chrome.notifications.onClicked.addListener(callback)
   }
 }; // Doxter
