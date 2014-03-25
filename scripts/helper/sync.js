@@ -225,7 +225,7 @@ jQuery.extend(Doxter, {
           "dateTime": (new Date(booking.ends)).toISOString()
         },
         "summary": booking.title,
-        "description": booking.reason + "\n\nDXID:"+booking.id
+        "description": booking.reason + "\n\nDXID:"+booking._id
       }
 
       // Insert event
